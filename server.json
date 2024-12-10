@@ -1,0 +1,160 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "Dr. John Doe",
+      "email": "john.doe@hospital.com",
+      "role": "doctor",
+      "suspended": false,
+      "details": {
+        "licenseNumber": "D12345",
+        "specialty": "Cardiology",
+        "yearsOfExperience": 10
+      }
+    },
+    {
+      "id": 2,
+      "name": "Dr. Silva Maddison",
+      "email": "silva.mad@hospital.com",
+      "role": "doctor",
+      "suspended": false,
+      "details": {
+        "licenseNumber": "D98765",
+        "specialty": "Cardiology",
+        "yearsOfExperience": 5
+      }
+    }
+  ],
+  "healthcareapprovals": [
+    {
+      "id": 1,
+      "name": "Dr. Sarah Johnson",
+      "type": "Doctor",
+      "status": "Pending",
+      "documents": [
+        {
+          "name": "Medical Certificate",
+          "url": "https://example.com/doc1.pdf"
+        },
+        {
+          "name": "Government ID",
+          "url": "https://example.com/doc2.pdf"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "MedCare Pharmacy",
+      "type": "Pharmacy",
+      "status": "Pending",
+      "documents": [
+        {
+          "name": "Pharmacy License",
+          "url": "https://example.com/doc3.pdf"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "LabPro Diagnostics",
+      "type": "Laboratory",
+      "status": "Pending",
+      "documents": [
+        {
+          "name": "Laboratory Accreditation",
+          "url": "https://example.com/doc4.pdf"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Evergreen Pharmacy",
+      "type": "Pharmacy",
+      "status": "Pending",
+      "documents": [
+        {
+          "name": "Laboratory Accreditation",
+          "url": "https://example.com/doc4.pdf"
+        }
+      ]
+    }
+  ],
+  "contactRequests": [
+    {
+      "id": 1,
+      "name": "John Doe",
+      "email": "john@example.com",
+      "type": "Inquiry",
+      "message": "How can I update my profile?",
+      "status": "Pending"
+    },
+    {
+      "id": 2,
+      "name": "Jane Smith",
+      "email": "jane@example.com",
+      "type": "Support",
+      "message": "I am unable to log in to my account.",
+      "status": "Pending"
+    },
+    {
+      "id": 3,
+      "name": "LabX Diagnostics",
+      "email": "contact@labx.com",
+      "type": "Concern",
+      "message": "We need clarification on a policy update.",
+      "status": "Pending"
+    }
+  ],
+  "paymentverification": [
+    {
+      "id": 1,
+      "user": "John Doe",
+      "amount": 100.5,
+      "status": "Pending",
+      "reference": "PAY12345",
+      "type": "Payout",
+      "createdAt": "2024-12-05T08:00:00Z"
+    },
+    {
+      "id": 2,
+      "user": "Jane Smith",
+      "amount": 250.75,
+      "status": "Approved",
+      "reference": "PAY67890",
+      "type": "Payout",
+      "createdAt": "2024-12-05T09:00:00Z"
+    },
+    {
+      "id": 1,
+      "user": "Dr. Sarah Johnson",
+      "amount": "$500",
+      "status": "Pending",
+      "reference": "PAY67890",
+      "type": "Payout",
+      "createdAt": "2024-12-05T09:00:00Z"
+    }
+  ],
+  "auditLogs": [
+    {
+      "id": 1,
+      "admin": "Admin John",
+      "action": "Approved Account",
+      "entity": "Doctor James Doe",
+      "timestamp": "2024-12-05T10:00:00Z"
+    },
+    {
+      "id": 2,
+      "admin": "Admin Sarah",
+      "action": "Credited Wallet",
+      "entity": "Patient Jane Smith",
+      "timestamp": "2024-12-05T11:00:00Z"
+    },
+    {
+      "id": 3,
+      "admin": "Admin Michael",
+      "action": "Suspended Account",
+      "entity": "Pharmacy Green Health",
+      "timestamp": "2024-12-05T12:00:00Z"
+    }
+  ]
+}
