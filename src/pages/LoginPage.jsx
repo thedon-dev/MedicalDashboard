@@ -13,7 +13,7 @@ const LoginPage = () => {
   useEffect(() => {
     const token = localStorage.getItem("authToken");
     if (token) {
-      navigate("/admin");
+      navigate("/dashboard");
     }
   }, [navigate]);
 
