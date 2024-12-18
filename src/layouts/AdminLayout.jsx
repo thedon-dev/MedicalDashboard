@@ -15,7 +15,7 @@ import { FaX } from "react-icons/fa6";
 import { BiUser } from "react-icons/bi";
 
 const AdminLayout = () => {
-  const [headText, setHeadText] = useState("Payout Verification");
+  const [headText, setHeadText] = useState("Dashboard");
   const location = useLocation();
   const [isNavOpen, setNavOpen] = useState(false);
   const [dropDownOpen, setDropDownOpen] = useState(false);
@@ -23,8 +23,8 @@ const AdminLayout = () => {
 
   const asideLinks = [
     {
-      name: "Payout Verification",
-      link: "/admin",
+      name: "Dashboard",
+      link: "/dashboard",
     },
     {
       name: "Healthcare Approval",
@@ -46,6 +46,10 @@ const AdminLayout = () => {
       name: "Reports",
       link: "/reports",
     },
+    {
+        name: "Payment Verification",
+        link: "/paymentsverification",
+      },
   ];
 
   const handleLogout = () => {
@@ -59,18 +63,18 @@ const AdminLayout = () => {
       <aside
         className={`${
           isNavOpen ? "left-0" : "-left-[100%]"
-        }  bg-green-700 w-[15rem] h-screen fixed lg:left-0 z-20 top-0 transition-all duration-300`}
+        }  bg-[#3AD1F0] w-[15rem] h-screen fixed lg:left-0 z-20 top-0 transition-all duration-300`}
       >
         <div className="">
-          <div className="justify-between lg:justify-center items-center h-[5rem] flex px-8">
-            <h1 className="text-white text-2xl font-bold">Name</h1>
+          <div className="justify-between lg:justify-center items-center h-[6.5rem] flex px-8">
+            <h1 className="text-white text-2xl font-bold"><span className="text-black">Mobile</span>Doctor</h1>
             <div className="block lg:hidden">
               <button className="" onClick={() => setNavOpen(!isNavOpen)}>
                 <FaX className="text-white" size={22} />
               </button>
             </div>
           </div>
-          <div className="mt-20 flex flex-col gap-10 h-full">
+          <div className="mt-10 flex flex-col gap-8 h-full">
             {asideLinks.map((link, index) => (
               <div
                 key={index}
@@ -89,7 +93,7 @@ const AdminLayout = () => {
                     return (
                       (isActive
                         ? `bg-white text-black`
-                        : "bg-none text-white  hover:bg-blue-500") +
+                        : "bg-none text-white  hover:bg-slate-100 hover:text-black") +
                       " text-nowrap capitalize text-base mx-auto flex p-4 rounded font-bold"
                     );
                   }}
@@ -101,7 +105,7 @@ const AdminLayout = () => {
           </div>
         </div>
       </aside>
-      <div className="lg:ml-[15rem] flex-grow">
+      <div className="lg:ml-[15rem] flex-grow shadow-2xl">
         <header className="shadow-lg w-full py-8 px-5 lg:px-10">
           <div className="flex items-center justify-between h-full">
             <div className="lg:hidden">
@@ -134,6 +138,7 @@ const AdminLayout = () => {
                 <div className="top-20 w-full absolute rounded-lg p-3 z-20 flex flex-col divide-y-2 bg-white shadow-lg">
                   <Link
                     to="/profile"
+                    onClick={()=> setDropDownOpen(!dropDownOpen)}
                     className="flex text-lg font-semibold justify-between py-5"
                   >
                     <BiUser className="" size={25} /> Profile{" "}
@@ -149,7 +154,7 @@ const AdminLayout = () => {
             </div>
           </div>
         </header>
-        <main className="p-5 lg:p-10 pb-20">
+        <main className="p-5 lg:p-10 pb-20 min-h-[100vh]">
           <Outlet />
         </main>
       </div>

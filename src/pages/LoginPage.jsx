@@ -50,7 +50,7 @@ const LoginPage = () => {
       if (response.success) {
         localStorage.setItem("authToken", response.token);
         alert("Login successful!");
-        navigate("/admin");
+        navigate("/dashboard");
       } else {
         setErrors({ general: "Invalid email or password." });
       }
@@ -62,7 +62,6 @@ const LoginPage = () => {
     }
   };
 
-  // Simulate an API call
   const fakeLogin = (email, password) => {
     return new Promise((resolve) => {
       setTimeout(() => {

@@ -10,6 +10,8 @@ import ProtectedRoute from "./utils/ProtectedRoute";
 import FormRequest from "./pages/FormRequest";
 import AuditLogs from "./pages/AuditLogs";
 import { ReportingAndAnalytics } from "./pages/ReportingAndAnalytics";
+import Dashboard from "./pages/Dashboard";
+import ProfilePage from "./pages/ProfilePage";
 
 function App() {
   return (
@@ -19,10 +21,10 @@ function App() {
           <Route path="/" element={<AdminLayout />}>
             <Route path="/" element={<LoginPage />} />
             <Route
-              path="/admin"
+              path="/dashboard"
               element={
                 <ProtectedRoute>
-                  <PayoutVerification />
+                  <Dashboard />
                 </ProtectedRoute>
               }
             />
@@ -63,6 +65,22 @@ function App() {
               element={
                 <ProtectedRoute>
                   <ReportingAndAnalytics />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/paymentsverification"
+              element={
+                <ProtectedRoute>
+                  <PayoutVerification />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <ProfilePage />
                 </ProtectedRoute>
               }
             />

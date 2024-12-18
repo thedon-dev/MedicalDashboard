@@ -1,24 +1,27 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
-import { BiUser } from "react-icons/bi";
-import { BsPeople } from "react-icons/bs";
+import { FaAngleLeft, FaAngleRight, FaRegStar, FaStar } from "react-icons/fa";
+import user from "../assets/patient.png";
+import TotalRequests from "../components/UserManagementComponents/TotalRequest";
 
 const UserManagement = () => {
-  const [users, setUsers] = useState([]);
+  const [patients, setPatients] = useState([]);
+  const [doctors, setDoctors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [recordsPerPage, setRecordsPerPage] = useState(5);
+  const [showData, setShowData] = useState("patients");
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch user data
     const fetchUsers = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/users");
-        setUsers(response.data);
-        console.log(response.data);
+        const response = await axios.get(`http://localhost:3000/${showData}`);
+        showData == "patients"
+          ? setPatients(response.data)
+          : setDoctors(response.data);
+        console.log(showData);
       } catch (error) {
         console.error("Error fetching users:", error);
       } finally {
@@ -26,7 +29,7 @@ const UserManagement = () => {
       }
     };
     fetchUsers();
-  }, []);
+  }, [showData]);
 
   const handleSuspend = async (userId) => {
     try {
@@ -45,10 +48,10 @@ const UserManagement = () => {
     }
   };
 
-  const totalPages = Math.ceil(users.length / recordsPerPage);
+  const totalPages = Math.ceil(patients.length / recordsPerPage);
   const indexOfLastRecord = currentPage * recordsPerPage;
   const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
-  const currentRecords = users.slice(indexOfFirstRecord, indexOfLastRecord);
+  const currentRecords = patients.slice(indexOfFirstRecord, indexOfLastRecord);
 
   const handlePreviousPage = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
@@ -67,68 +70,191 @@ const UserManagement = () => {
   }
 
   return (
-    <div className="p-4 min-h-screen">
-      <div className="grid grid-cols-2 lg:grid-cols-4">
-        <div className="col-span-1 flex justify-between bg-green-700 rounded-lg p-5 text-white">
-          <div className="flex flex-col gap-3">
-            <h1 className="text-xl lg:text-3xl font-bold">Total Users</h1>
-            <p className="text-2xl font-semibold">{users.length}</p>
-          </div>
-          <div className="">
-            <div className="bg-white p-2 rounded-lg">
-              <BsPeople color="green" size={30}/>
-            </div>
-          </div>
-        </div>
+    <div className="p-4">
+      <div className="flex gap-3 mb-10">
+        {["patients", "doctors"].map((data, index) => (
+          <button
+            key={index}
+            className={`px-4 py-3 ${
+              showData == data ? "bg-[#3AD1F0]" : "bg-slate-500"
+            } font-semibold text-white rounded shadow-lg hover:shadow-2xl `}
+            onClick={() => setShowData(data)}
+          >
+            {data}
+          </button>
+        ))}
       </div>
-      <h1 className="text-3xl font-bold mb-10 mt-10">Users</h1>
       <div className="rounded-lg shadow-lg overflow-hidden">
-        <table className="min-w-full bg-white rounded-lg">
-          <thead>
-            <tr className="bg-black text-white">
-              <th className="py-3 px-4 text-left">Name</th>
-              <th className="py-3 px-4 text-left">Email</th>
-              <th className="py-3 px-4 text-left">Role</th>
-              <th className="py-3 px-4 text-left">Status</th>
-              <th className="py-3 px-4 text-center">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.map((user) => (
-              <tr
-                key={user.id}
-                className="border-b hover:bg-gray-100 cursor-pointer"
-                onClick={() => handleRowClick(user.id)}
-              >
-                <td className="py-3 px-4">{user.name}</td>
-                <td className="py-3 px-4">{user.email}</td>
-                <td className="py-3 px-4 capitalize">{user.role}</td>
-                <td className="py-3 px-4">
-                  {user.suspended ? (
-                    <span className="text-red-500 font-semibold">
-                      Suspended
-                    </span>
-                  ) : (
-                    <span className="text-green-500 font-semibold">Active</span>
-                  )}
-                </td>
-                <td
-                  className="py-3 px-4 text-center"
-                  onClick={(e) => e.stopPropagation()} // Prevent row click
-                >
-                  {!user.suspended && (
-                    <button
-                      onClick={() => handleSuspend(user.id)}
-                      className="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600"
-                    >
-                      Suspend
-                    </button>
-                  )}
-                </td>
+        {/* {showData == "Doctors" ? (
+          <table className="min-w-full bg-white rounded-lg">
+            <thead>
+              <tr className="bg-black text-white">
+                <th className="py-3 px-4 text-left">Name</th>
+                <th className="py-3 px-4 text-left">Email</th>
+                <th className="py-3 px-4 text-left">Purpose</th>
+                <th className="py-3 px-4 text-left">Status</th>
+                <th className="py-3 px-4 text-center">Actions</th>
               </tr>
+            </thead>
+            <tbody>
+              {doctors.map((user) => (
+                <tr
+                  key={user.id}
+                  className="border-b hover:bg-gray-100 cursor-pointer"
+                  onClick={() => handleRowClick(user.id)}
+                >
+                  <td className="py-3 px-4">{user.name}</td>
+                  <td className="py-3 px-4">{user.email}</td>
+                  <td className="py-3 px-4 capitalize">{user.tag}</td>
+                  <td className="py-3 px-4">
+                    {user.suspended ? (
+                      <span className="text-red-500 font-semibold">
+                        Suspended
+                      </span>
+                    ) : (
+                      <span className="text-green-500 font-semibold">
+                        Active
+                      </span>
+                    )}
+                  </td>
+                  <td
+                    className="py-3 px-4 text-center"
+                    onClick={(e) => e.stopPropagation()} // Prevent row click
+                  >
+                    {!user.suspended && (
+                      <button
+                        onClick={() => handleRowClick(user.id)}
+                        className="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600"
+                      >
+                        Show Profile
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <table className="min-w-full bg-white rounded-lg">
+            <thead>
+              <tr className="bg-black text-white">
+                <th className="py-3 px-4 text-left">Name</th>
+                <th className="py-3 px-4 text-left">Email</th>
+                <th className="py-3 px-4 text-left">Status</th>
+                <th className="py-3 px-4 text-center">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {patients.map((user) => (
+                <tr
+                  key={user.id}
+                  className="border-b hover:bg-gray-100 cursor-pointer"
+                  onClick={() => handleRowClick(user.id)}
+                >
+                  <td className="py-3 px-4">{user.name}</td>
+                  <td className="py-3 px-4">{user.email}</td>
+                  <td className="py-3 px-4">
+                    {user.treatment ? (
+                      <span className="text-red-500 font-semibold">
+                        In Treatment
+                      </span>
+                    ) : (
+                      <span className="text-gray-500 font-semibold">
+                        Dormant
+                      </span>
+                    )}
+                  </td>
+                  <td
+                    className="py-3 px-4 text-center"
+                    onClick={(e) => e.stopPropagation()} // Prevent row click
+                  >
+                    <button
+                      onClick={() => handleRowClick(user.id)}
+                      className="bg-green-500 text-white py-1 px-3 rounded hover:bg-red-600"
+                    >
+                      Show Profile
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )} */}
+      </div>
+
+      <div>
+        {showData == "patients" ? (
+          <div className="grid lg:grid-cols-2 gap-5">
+            {patients.map((patient, index) => (
+              <div
+                key={index}
+                className="bg-white overflow-hidden grid grid-cols-5 rounded-lg shadow"
+              >
+                <div
+                  className="overflow-hidden w-full col-span-2"
+                  style={{
+                    backgroundImage: `url(${user})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    backgroundRepeat: "no-repeat",
+                  }}
+                ></div>
+                <div className="col-span-3 p-4 flex flex-col gap-2 justify-between w-full">
+                  <h4 className="text-xl font-semibold">{patient.name}</h4>
+                  <span className="">location: {patient.location}</span>
+                  <div className="flex gap-2">
+                    <span>Height: {patient.height}ft</span>
+                    <span>Weight: {patient.weight}kg</span>
+                  </div>
+                  <p className="">{patient.details.bio}</p>
+                  <button className="w-full py-2 rounded bg-[#3AD1F0] mt-2 font-semibold">
+                    View Profile
+                  </button>
+                </div>
+              </div>
             ))}
-          </tbody>
-        </table>
+          </div>
+        ) : (
+          <div className="grid lg:grid-cols-2 gap-5">
+            {doctors.map((doctor, index) => (
+              <div
+                key={index}
+                className="bg-white grid grid-cols-5 rounded-lg shadow"
+              >
+                <div
+                  className="overflow-hidden w-full col-span-2"
+                  style={{
+                    backgroundImage: `url(${user})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    backgroundRepeat: "no-repeat",
+                  }}
+                >
+                  {/* <img src={user} alt="" className="object-cover"/> */}
+                </div>
+                <div className="col-span-3 p-4 flex flex-col gap-2 justify-between w-full">
+                  <h4 className="text-xl font-semibold">{doctor.name}</h4>
+                  <div className="flex">
+                    {Array.from({ length: 5 }, (_, index) => (
+                      <span key={index} className="flex">
+                        {index < doctor.details.rating ? (
+                          <FaStar className="text-green-500" size={15} />
+                        ) : (
+                          <FaRegStar className="text-gray-400" size={15} />
+                        )}
+                      </span>
+                    ))}
+                  </div>
+
+                  <p className="">{doctor.details.bio}</p>
+                  <button className="w-full py-2 rounded bg-[#3AD1F0] mt-2 font-semibold">
+                    View Profile
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
       <div className="flex items-center gap-4 justify-center mt-10">
         <button

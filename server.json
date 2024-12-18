@@ -1,36 +1,82 @@
 {
-  "users": [
+  "patients": [
     {
-      "id": 1,
-      "name": "Dr. John Doe",
-      "email": "john.doe@hospital.com",
-      "role": "doctor",
-      "suspended": false,
+      "id": "1",
+      "name": "Samuel Israel",
+      "location": "Port-Harcourt",
+      "height": 6,
+      "weight": 30,
       "details": {
-        "licenseNumber": "D12345",
-        "specialty": "Cardiology",
-        "yearsOfExperience": 10
+        "bio": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui quo cum velit officia molestias, accusamus nemo saepe officiis ea odio.",
+        "status": "In Treatment",
+        "sickness": "Severe Headache"
       }
     },
     {
-      "id": 2,
-      "name": "Dr. Silva Maddison",
-      "email": "silva.mad@hospital.com",
-      "role": "doctor",
-      "suspended": false,
+      "id": "2",
+      "name": "Michael Josh",
+      "location": "Port-Harcourt",
+      "height": 6,
+      "weight": 30,
       "details": {
-        "licenseNumber": "D98765",
-        "specialty": "Cardiology",
+        "bio": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui quo cum velit officia molestias, accusamus nemo saepe officiis ea odio.",
+        "status": "In Treatment",
+        "sickness": "Severe Headache"
+      }
+    },
+    {
+      "id": "3",
+      "name": "Halimat Isa",
+      "location": "Port-Harcourt",
+      "height": 6,
+      "weight": 30,
+      "details": {
+        "bio": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui quo cum velit officia molestias, accusamus nemo saepe officiis ea odio.",
+        "status": "In Treatment",
+        "sickness": "Severe Headache"
+      }
+    },
+    {
+      "id": "4",
+      "name": "Johnson Fish",
+      "location": "Port-Harcourt",
+      "height": 6,
+      "weight": 30,
+      "details": {
+        "bio": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui quo cum velit officia molestias, accusamus nemo saepe officiis ea odio.",
+        "status": "In Treatment",
+        "sickness": "Severe Headache"
+      }
+    }
+  ],
+  "doctors": [
+    {
+      "id": "1",
+      "name": "Dr. Silva Maddison",
+      "tag": "patient",
+      "details": {
+        "bio": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui quo cum velit officia molestias, accusamus nemo saepe officiis ea odio.",
+        "rating": 5,
+        "yearsOfExperience": 5
+      }
+    },
+    {
+      "id": "2",
+      "name": "Dr. Silva Maddison",
+      "tag": "doctor",
+      "details": {
+        "bio": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui quo cum velit officia molestias, accusamus nemo saepe officiis ea odio.",
+        "rating": 3,
         "yearsOfExperience": 5
       }
     }
   ],
   "healthcareapprovals": [
     {
-      "id": 1,
+      "id": "1",
       "name": "Dr. Sarah Johnson",
       "type": "Doctor",
-      "status": "Pending",
+      "status": "Approved",
       "documents": [
         {
           "name": "Medical Certificate",
@@ -43,10 +89,10 @@
       ]
     },
     {
-      "id": 2,
+      "id": "2",
       "name": "MedCare Pharmacy",
       "type": "Pharmacy",
-      "status": "Pending",
+      "status": "Approved",
       "documents": [
         {
           "name": "Pharmacy License",
@@ -55,10 +101,10 @@
       ]
     },
     {
-      "id": 3,
+      "id": "3",
       "name": "LabPro Diagnostics",
       "type": "Laboratory",
-      "status": "Pending",
+      "status": "Rejected",
       "documents": [
         {
           "name": "Laboratory Accreditation",
@@ -67,10 +113,10 @@
       ]
     },
     {
-      "id": 4,
+      "id": "4",
       "name": "Evergreen Pharmacy",
       "type": "Pharmacy",
-      "status": "Pending",
+      "status": "Approved",
       "documents": [
         {
           "name": "Laboratory Accreditation",
@@ -81,7 +127,7 @@
   ],
   "contactRequests": [
     {
-      "id": 1,
+      "id": "1",
       "name": "John Doe",
       "email": "john@example.com",
       "type": "Inquiry",
@@ -89,7 +135,7 @@
       "status": "Pending"
     },
     {
-      "id": 2,
+      "id": "2",
       "name": "Jane Smith",
       "email": "jane@example.com",
       "type": "Support",
@@ -97,7 +143,7 @@
       "status": "Pending"
     },
     {
-      "id": 3,
+      "id": "3",
       "name": "LabX Diagnostics",
       "email": "contact@labx.com",
       "type": "Concern",
@@ -107,16 +153,16 @@
   ],
   "paymentverification": [
     {
-      "id": 1,
+      "id": "1",
       "user": "John Doe",
       "amount": 100.5,
-      "status": "Pending",
+      "status": "Approved",
       "reference": "PAY12345",
       "type": "Payout",
       "createdAt": "2024-12-05T08:00:00Z"
     },
     {
-      "id": 2,
+      "id": "2",
       "user": "Jane Smith",
       "amount": 250.75,
       "status": "Approved",
@@ -125,10 +171,19 @@
       "createdAt": "2024-12-05T09:00:00Z"
     },
     {
-      "id": 1,
+      "id": "3",
       "user": "Dr. Sarah Johnson",
-      "amount": "$500",
-      "status": "Pending",
+      "amount": 500,
+      "status": "Approved",
+      "reference": "PAY67890",
+      "type": "Payout",
+      "createdAt": "2024-12-05T09:00:00Z"
+    },
+    {
+      "id": "4",
+      "user": "Dr. Daniel Johnson",
+      "amount": 900,
+      "status": "Approved",
       "reference": "PAY67890",
       "type": "Payout",
       "createdAt": "2024-12-05T09:00:00Z"
@@ -136,21 +191,21 @@
   ],
   "auditLogs": [
     {
-      "id": 1,
+      "id": "1",
       "admin": "Admin John",
       "action": "Approved Account",
       "entity": "Doctor James Doe",
       "timestamp": "2024-12-05T10:00:00Z"
     },
     {
-      "id": 2,
+      "id": "2",
       "admin": "Admin Sarah",
       "action": "Credited Wallet",
       "entity": "Patient Jane Smith",
       "timestamp": "2024-12-05T11:00:00Z"
     },
     {
-      "id": 3,
+      "id": "3",
       "admin": "Admin Michael",
       "action": "Suspended Account",
       "entity": "Pharmacy Green Health",

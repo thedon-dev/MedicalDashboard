@@ -21,8 +21,7 @@ const AuditLogs = () => {
 
     fetchLogs();
   }, []);
-
-  // Pagination calculations
+  
   const indexOfLastLog = currentPage * logsPerPage;
   const indexOfFirstLog = indexOfLastLog - logsPerPage;
   const currentLogs = logs.slice(indexOfFirstLog, indexOfLastLog);
@@ -62,7 +61,6 @@ const AuditLogs = () => {
         </tbody>
       </table>
 
-      {/* Pagination */}
       <div className="flex justify-center mt-4">
         {Array.from(
           { length: Math.ceil(logs.length / logsPerPage) },

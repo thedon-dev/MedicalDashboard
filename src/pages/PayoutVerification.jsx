@@ -1,5 +1,8 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { BiCheck } from "react-icons/bi";
+import { BsPeople } from "react-icons/bs";
+import { CiMoneyBill } from "react-icons/ci";
 
 const VerificationPage = () => {
   const [transactions, setTransactions] = useState([]);
@@ -8,6 +11,8 @@ const VerificationPage = () => {
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [totalAmount, setTotalAmount] = useState(0);
+  const [approvedNum, setApprovedNum] = useState(0);
 
   const handleApproveClick = (transaction) => {
     setSelectedTransaction(transaction);
@@ -17,55 +22,26 @@ const VerificationPage = () => {
   const fetchTransactions = async () => {
     setIsLoading(true);
     setError("");
-
+  
     try {
-      const response = await axios.get("http://localhost:3000/paymentverification"); // use this for the real API call
-    //   const response = await dummyAPI();
+      const response = await axios.get(
+        "http://localhost:3000/paymentverification"
+      );
       setTransactions(response.data);
-      console.log(response.data)
+
+      const total = response.data.reduce((acc, item) => acc + item.amount, 0);
+      const approved = response.data.filter(
+        (transaction) => transaction.status === "Approved"
+      );
+      setApprovedNum(approved.length);
+      setTotalAmount(total);
     } catch (err) {
       setError(err.message || "Failed to fetch transactions.");
     } finally {
       setIsLoading(false);
     }
   };
-
-  const dummyAPI = () => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const success = true;
-        if (success) {
-          resolve({
-            transactions: [
-              {
-                id: 1,
-                provider: "Dr. Sarah Johnson",
-                type: "Payout",
-                amount: "$500",
-                status: "Pending",
-              },
-              {
-                id: 2,
-                provider: "MedCare Pharmacy",
-                type: "Payout",
-                amount: "$1200",
-                status: "Pending",
-              },
-              {
-                id: 3,
-                provider: "LabPro Diagnostics",
-                type: "Payout",
-                amount: "$300",
-                status: "Pending",
-              },
-            ],
-          });
-        } else {
-          reject(new Error("Failed to fetch transactions."));
-        }
-      }, 2000);
-    });
-  };
+  
 
   useEffect(() => {
     fetchTransactions();
@@ -79,19 +55,35 @@ const VerificationPage = () => {
 
     new Promise((resolve, reject) => {
       setTimeout(() => {
-        otp === "123456" ? resolve() : reject(new Error("invalid OTP"));
+        otp === "123456" ? resolve() : reject(new Error("Invalid OTP"));
       }, 1000);
     })
       .then(() => {
-        setTransactions((prev) =>
-          prev.map((txn) =>
-            txn.id === selectedTransaction.id
-              ? { ...txn, status: "Approved" }
-              : txn
+        axios
+          .patch(
+            `http://localhost:3000/paymentverification/${selectedTransaction.id}`,
+            {
+              status: "Approved",
+            }
           )
-        );
-        setMessage("Transaction approved successfully!");
-        setSelectedTransaction(null);
+          .then(() => {
+            setTransactions((prev) =>
+              prev.map((txn) =>
+                txn.id === selectedTransaction.id
+                  ? { ...txn, status: "Approved" }
+                  : txn
+              )
+            );
+            window.location.reload()
+            setMessage("Transaction approved successfully!");
+            setSelectedTransaction(null);
+          })
+          .catch((error) => {
+            console.error("Error updating transaction:", error);
+            setMessage(
+              "Failed to approve transaction. Please try again later."
+            );
+          });
       })
       .catch(() => {
         setMessage("Invalid OTP. Please try again.");
@@ -103,15 +95,53 @@ const VerificationPage = () => {
 
   return (
     <div className="flex flex-col items-center p-4">
-      <h1 className="text-start w-full text-3xl font-bold mb-10">
-        Payouts Requests
-      </h1>
+      <div className="flex w-full">
+        <h1 className="text-2xl font-bold text-start mb-10">Metrics</h1>
+      </div>
+      <div className="w-full grid grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="col-span-1 flex gap-3 justify-between shadow-lg text-black rounded-lg p-4">
+          <div className="flex flex-col gap-4">
+            <h1 className="text-xl lg:text-2xl font-semibold">
+              Total Requests
+            </h1>
+            <p className="text-2xl font-bold">{transactions.length}</p>
+          </div>
+          <div className="">
+            <div className="bg-pink-500 p-2 rounded-lg">
+              <BsPeople color="pink" size={30} />
+            </div>
+          </div>
+        </div>
+        <div className="col-span-1 flex justify-between shadow-lg rounded-lg p-4 text-black">
+          <div className="flex flex-col gap-4">
+            <h1 className="text-xl lg:text-2xl font-semibold">Total Amount</h1>
+            <p className="text-2xl font-bold">NGN{totalAmount}</p>
+          </div>
+          <div className="">
+            <div className="bg-red-300 p-2 rounded-lg">
+              <CiMoneyBill color="red" size={30} />
+            </div>
+          </div>
+        </div>
+        <div className="col-span-1 flex justify-between shadow-lg rounded-lg p-4 text-back">
+          <div className="flex flex-col gap-4">
+            <h1 className="text-xl lg:text-2xl font-semibold">Approved</h1>
+            <p className="text-2xl font-bold">{approvedNum}</p>
+          </div>
+          <div className="">
+            <div className="bg-green-400 p-2 rounded-lg">
+              <BiCheck color="green" size={30} />
+            </div>
+          </div>
+        </div>
+      </div>
+      <h1 className="text-start w-full text-2xl font-bold my-10">Requests</h1>
 
       {isLoading && <p className="text-blue-500">Loading transactions...</p>}
       {error && <p className="text-red-500">{error}</p>}
 
       {!isLoading && !error && transactions.length > 0 && (
-        <div className="w-full bg-white rounded-lg overflow-hidden shadow-md">
+        <div className="w-full bg-white rounded-lg overflow-hidden shadow-md overflow-x-scroll lg:overflow-auto">
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-black text-white text-sm uppercase">

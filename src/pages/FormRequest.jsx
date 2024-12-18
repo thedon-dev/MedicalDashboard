@@ -4,6 +4,7 @@ import axios from "axios";
 const FormRequest = () => {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
+  const requestPerPage = 10;
 
   useEffect(() => {
     const fetchRequests = async () => {
@@ -25,7 +26,7 @@ const FormRequest = () => {
   }
 
   return (
-    <div className="p-4">
+    <div className="lg:p-4">
       <h1 className="text-2xl font-bold mb-4">Contact Form Requests</h1>
       <table className="min-w-full border-collapse border border-gray-300">
         <thead>
