@@ -62,7 +62,7 @@
     },
     {
       "id": "2",
-      "name": "Dr. Silva Maddison",
+      "name": "Dr. Smith Maddison",
       "tag": "doctor",
       "details": {
         "bio": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui quo cum velit officia molestias, accusamus nemo saepe officiis ea odio.",
@@ -210,6 +210,75 @@
       "action": "Suspended Account",
       "entity": "Pharmacy Green Health",
       "timestamp": "2024-12-05T12:00:00Z"
+    }
+  ],
+  "useractivityandfinancialstatus": [
+    {
+      "id": "1",
+      "name": "John Doe",
+      "email": "john@example.com",
+      "status": "active",
+      "lastActive": "2024-12-15"
+    },
+    {
+      "id": "2",
+      "name": "Jane Smith",
+      "email": "jane@example.com",
+      "status": "suspended",
+      "lastActive": "2024-12-14"
+    }
+  ],
+  "transactions": [
+    {
+      "id": "1",
+      "user": "John Doe",
+      "type": "credit",
+      "amount": 500,
+      "date": "2024-12-10"
+    },
+    {
+      "id": "2",
+      "user": "Jane Amith",
+      "type": "debit",
+      "amount": 1000,
+      "date": "2024-12-20"
+    },
+    {
+      "id": "3",
+      "user": "Ruth Smith",
+      "type": "debit",
+      "amount": 500,
+      "date": "2024-11-8"
+    },
+    {
+      "id": "4",
+      "user": "Smith Andrew",
+      "type": "credit",
+      "amount": 250,
+      "date": "2024-12-20"
+    },
+    {
+      "id": "5",
+      "user": "Smith Andrew",
+      "type": "credit",
+      "amount": 250,
+      "date": "2024-12-20"
+    }
+  ],
+  "feedbacks": [
+    {
+      "id": 1,
+      "provider": "Dr. Smith",
+      "rating": 5,
+      "comments": "Excellent service",
+      "date": "2024-12-10"
+    },
+    {
+      "id": 2,
+      "provider": "Dr. Silva",
+      "rating": 3,
+      "comments": "Average service",
+      "date": "2024-12-11"
     }
   ]
 }

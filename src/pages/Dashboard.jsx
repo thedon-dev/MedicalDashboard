@@ -71,7 +71,7 @@ const Dashboard = () => {
           <PatientsData />
         </div>
 
-        <div className="mt-10 grid lg;grid-cols-5">
+        <div className="mt-10 grid lg:grid-cols-5">
           <div className="col-span-3">
             <h3 className="text-2xl font-bold">Recent Patient Activity</h3>
             <div className="py-2 px-3 rounded shadow-lg mt-5 items-center">
