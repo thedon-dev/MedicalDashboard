@@ -7,13 +7,14 @@ const RequestDetail = () => {
   const [request, setRequest] = useState(null);
   const [loading, setLoading] = useState(true);
   const [feedback, setFeedback] = useState("");
-  const baseUrl = "http://localhost:3000/contactRequests";
+  const liveUrl = "https://meddatabase.onrender.com"
+  const localUrl = "http://localhost:3000/contactRequests"
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchRequest = async () => {
       try {
-        const response = await axios.get(`${baseUrl}/${id}`);
+        const response = await axios.get(`${liveUrl}/${id}`);
         setRequest(response.data);
         setLoading(false);
       } catch (error) {

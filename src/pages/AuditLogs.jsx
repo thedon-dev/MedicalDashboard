@@ -21,7 +21,7 @@ const AuditLogs = () => {
 
     fetchLogs();
   }, []);
-  
+
   const indexOfLastLog = currentPage * logsPerPage;
   const indexOfFirstLog = indexOfLastLog - logsPerPage;
   const currentLogs = logs.slice(indexOfFirstLog, indexOfLastLog);
@@ -36,30 +36,38 @@ const AuditLogs = () => {
     <div className="p-5">
       <ActionStatsWithChart />
       <h1 className="text-2xl font-bold mb-5">Audit Logs</h1>
-      <table className="w-full border-collapse border border-gray-300">
-        <thead>
-          <tr>
-            <th className="border border-gray-300 px-4 py-2">ID</th>
-            <th className="border border-gray-300 px-4 py-2">Admin</th>
-            <th className="border border-gray-300 px-4 py-2">Action</th>
-            <th className="border border-gray-300 px-4 py-2">Entity</th>
-            <th className="border border-gray-300 px-4 py-2">Timestamp</th>
-          </tr>
-        </thead>
-        <tbody>
-          {currentLogs.map((log) => (
-            <tr key={log.id}>
-              <td className="border border-gray-300 px-4 py-2">{log.id}</td>
-              <td className="border border-gray-300 px-4 py-2">{log.admin}</td>
-              <td className="border border-gray-300 px-4 py-2">{log.action}</td>
-              <td className="border border-gray-300 px-4 py-2">{log.entity}</td>
-              <td className="border border-gray-300 px-4 py-2">
-                {new Date(log.timestamp).toLocaleString()}
-              </td>
+      <div className="rounded-lg overflow-hidden">
+        <table className="bg-[#3AD1F0] w-full border-collapse border border-gray-300">
+          <thead>
+            <tr className="text-white">
+              <th className="border border-gray-300 px-4 py-2">ID</th>
+              <th className="border border-gray-300 px-4 py-2">Admin</th>
+              <th className="border border-gray-300 px-4 py-2">Action</th>
+              <th className="border border-gray-300 px-4 py-2">Entity</th>
+              <th className="border border-gray-300 px-4 py-2">Timestamp</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody className="bg-white">
+            {currentLogs.map((log) => (
+              <tr key={log.id}>
+                <td className="border border-gray-300 px-4 py-2">{log.id}</td>
+                <td className="border border-gray-300 px-4 py-2">
+                  {log.admin}
+                </td>
+                <td className="border border-gray-300 px-4 py-2">
+                  {log.action}
+                </td>
+                <td className="border border-gray-300 px-4 py-2">
+                  {log.entity}
+                </td>
+                <td className="border border-gray-300 px-4 py-2">
+                  {new Date(log.timestamp).toLocaleString()}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       <div className="flex justify-center mt-4">
         {Array.from(

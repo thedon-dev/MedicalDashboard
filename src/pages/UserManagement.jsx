@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FaAngleLeft, FaAngleRight, FaRegStar, FaStar } from "react-icons/fa";
 import user from "../assets/patient.png";
@@ -10,14 +10,16 @@ const UserManagement = () => {
   const [doctors, setDoctors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const [recordsPerPage, setRecordsPerPage] = useState(5);
+  const [recordsPerPage] = useState(5);
   const [showData, setShowData] = useState("patients");
   const navigate = useNavigate();
+  const liveUrl = "https://meddatabase.onrender.com"
+  const localUrl = "http://localhost:3000/"
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/${showData}`);
+        const response = await axios.get(`${liveUrl}/${showData}`);
         showData == "patients"
           ? setPatients(response.data)
           : setDoctors(response.data);
@@ -33,7 +35,7 @@ const UserManagement = () => {
 
   const handleSuspend = async (userId) => {
     try {
-      await axios.patch(`http://localhost:3000/users/${userId}`, {
+      await axios.patch(`${liveUrl}/users/${userId}`, {
         suspended: true,
       });
       setUsers((prevUsers) =>
@@ -59,10 +61,6 @@ const UserManagement = () => {
 
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
-  };
-
-  const handleRowClick = (userId) => {
-    navigate(`/users/${userId}`);
   };
 
   if (loading) {
@@ -185,7 +183,7 @@ const UserManagement = () => {
       <div>
         {showData == "patients" ? (
           <div className="grid lg:grid-cols-2 gap-5">
-            {patients.map((patient, index) => (
+            {currentRecords.map((patient, index) => (
               <div
                 key={index}
                 className="bg-white overflow-hidden grid grid-cols-5 rounded-lg shadow"
@@ -207,9 +205,9 @@ const UserManagement = () => {
                     <span>Weight: {patient.weight}kg</span>
                   </div>
                   <p className="">{patient.details.bio}</p>
-                  <button className="w-full py-2 rounded bg-[#3AD1F0] mt-2 font-semibold">
+                  <Link to={`/users/${patient.id}`} className=" text-center w-full py-2 rounded bg-[#3AD1F0] mt-2 font-semibold">
                     View Profile
-                  </button>
+                  </Link>
                 </div>
               </div>
             ))}

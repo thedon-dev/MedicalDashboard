@@ -7,12 +7,13 @@ const FormRequest = () => {
   const requestPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
   const [requestsPerPage, setRecordsPerPage] = useState(5);
+  const liveUrl = "https://meddatabase.onrender.com"
 
   useEffect(() => {
     const fetchRequests = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:3000/contactRequests"
+          `${liveUrl}/contactRequests`
         );
         setRequests(response.data);
         setLoading(false);

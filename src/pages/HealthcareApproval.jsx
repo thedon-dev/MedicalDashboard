@@ -4,6 +4,7 @@ import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
 import TotalRequest from "../components/UserManagementComponents/TotalRequest";
 
 const HealthcareApproval = () => {
+  const liveUrl = "https://meddatabase.onrender.com"
   const [providers, setProviders] = useState([]);
   const [selectedProvider, setSelectedProvider] = useState(null);
   const [message, setMessage] = useState("");
@@ -28,7 +29,7 @@ const HealthcareApproval = () => {
 
     try {
       const response = await axios.get(
-        "http://localhost:3000/healthcareapprovals"
+        `${liveUrl}/healthcareapprovals`
       );
       const fetchedData = response.data;
       const groupedRequests = fetchedData.reduce((acc, provider) => {
@@ -58,7 +59,7 @@ const HealthcareApproval = () => {
 
   const handleApproval = async (id) => {
     try {
-      await axios.patch(`http://localhost:3000/healthcareapprovals/${id}`, {
+      await axios.patch(`${liveUrl}/healthcareapprovals/${id}`, {
         status: "Approved",
       });
       const updatedProviders = providers.map((provider) =>
