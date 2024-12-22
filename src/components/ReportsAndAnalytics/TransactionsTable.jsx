@@ -2,7 +2,7 @@ import React from 'react'
 
 const TransactionsTable = ({ transactions }) => {
   return (
-    <div className="mt-5 bg-[#3AD1F0] rounded-lg overflow-hidden shadow-lg overflow-x-scroll lg:overflow-x-hidden">
+    <div className="mt-5 bg-[#3AD1F0] rounded-lg max-w-full overflow-hidden shadow-lg overflow-x-scroll lg:overflow-x-hidden">
       <table className="w-full border-collapse">
         <thead>
           <tr className='text-white'>

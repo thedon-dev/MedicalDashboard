@@ -97,7 +97,7 @@ export const ReportingAndAnalytics = () => {
           )}
         </div>
       </div>
-      <div className="mt-10 grid grid-cols-5 gap-10">
+      <div className="mt-10 grid lg:grid-cols-5 gap-10">
         <div className="col-span-3">
           <h3 className="text-xl font-bold">Feedbacks</h3>
           {!loading ? (
