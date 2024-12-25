@@ -19,7 +19,7 @@ const UserManagement = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get(`${localUrl}/${showData}`);
+        const response = await axios.get(`${liveUrl}/${showData}`);
         showData == "patients"
           ? setPatients(response.data)
           : setDoctors(response.data);

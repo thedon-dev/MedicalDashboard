@@ -30,7 +30,7 @@ const VerificationPage = () => {
 
     try {
       const response = await axios.get(
-        `${localUrl}/paymentverification`
+        `${liveUrl}/paymentverification`
       );
       setTransactions(response.data);
 
@@ -83,7 +83,7 @@ const VerificationPage = () => {
       .then(() => {
         axios
           .patch(
-            `http://localhost:3000/paymentverification/${selectedTransaction.id}`,
+            `${liveUrl}/paymentverification/${selectedTransaction.id}`,
             {
               status: "Approved",
             }

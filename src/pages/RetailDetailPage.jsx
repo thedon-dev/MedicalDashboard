@@ -28,7 +28,7 @@ const RequestDetail = () => {
 
   const handleAction = async (action) => {
     try {
-      await axios.patch(`${baseUrl}/${id}`, { status: action });
+      await axios.patch(`${liveUrl}/${id}`, { status: action });
       navigate("/requests");
     } catch (error) {
       console.error("Error handling request action:", error);
@@ -37,7 +37,7 @@ const RequestDetail = () => {
 
   const handleFeedback = async () => {
     try {
-      await axios.patch(`${baseUrl}/${id}`, { status: "Feedback Sent", feedback });
+      await axios.patch(`${liveUrl}/${id}`, { status: "Feedback Sent", feedback });
       navigate("/requests");
     } catch (error) {
       console.error("Error sending feedback:", error);

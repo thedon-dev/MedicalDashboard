@@ -13,7 +13,7 @@ const FormRequest = () => {
     const fetchRequests = async () => {
       try {
         const response = await axios.get(
-          `${localUrl}/contactRequests`
+          `${liveUrl}/contactRequests`
         );
         setRequests(response.data);
         setLoading(false);

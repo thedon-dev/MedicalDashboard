@@ -13,7 +13,7 @@ const AuditLogs = () => {
   useEffect(() => {
     const fetchLogs = async () => {
       try {
-        const response = await axios.get(`${localUrl}/auditLogs`);
+        const response = await axios.get(`${liveUrl}/auditLogs`);
         setLogs(response.data);
         setLoading(false);
       } catch (error) {

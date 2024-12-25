@@ -25,7 +25,7 @@ export const ReportingAndAnalytics = () => {
     const fetchData = async () => {
       try {
         const responseStatus = await axios.get(
-          `${localUrl}/useractivityandaccountstatus`
+          `${liveUrl}/useractivityandaccountstatus`
         );
         setUsersStats(responseStatus.data);
       } catch (error) {
@@ -36,7 +36,7 @@ export const ReportingAndAnalytics = () => {
 
       try {
         const responseTransactions = await axios.get(
-          `${localUrl}/transactions`
+          `${liveUrl}/transactions`
         );
         setUserTransactions(responseTransactions.data);
 
@@ -56,7 +56,7 @@ export const ReportingAndAnalytics = () => {
       }
 
       try {
-        const responseFeedback = await axios.get(`${localUrl}/feedbacks`);
+        const responseFeedback = await axios.get(`${liveUrl}/feedbacks`);
         setUserFeedback(responseFeedback.data);
       } catch (error) {
         console.error(error);

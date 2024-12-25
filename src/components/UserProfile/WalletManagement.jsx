@@ -8,13 +8,15 @@ const WalletManagement = ({ setWalletModalOpen, id }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const localUrl = "http://localhost:3000";
+  const liveUrl = "https://meddatabase.onrender.com";
+
 
   useEffect(() => {
     setLoading(true);
 
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${localUrl}/wallets/${id}`);
+        const response = await axios.get(`${liveUrl}/wallets/${id}`);
         setWalletAmount(response.data.amount);
       } catch (error) {
         console.error(error);
@@ -40,7 +42,7 @@ const WalletManagement = ({ setWalletModalOpen, id }) => {
         }
         updatedBalance = walletAmount - parseFloat(transactionAmount);
       }
-      const response = await axios.patch(`${localUrl}/wallets/${id}/`, {
+      const response = await axios.patch(`${liveUrl}/wallets/${id}/`, {
         amount: updatedBalance,
       });
 

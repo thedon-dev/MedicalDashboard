@@ -26,11 +26,13 @@ const ActionStatsWithChart = () => {
   const [loading, setLoading] = useState(true);
   const [weeklyStats, setWeeklyStats] = useState({});
   const [monthlyStats, setMonthlyStats] = useState({});
+  const liveUrl = "https://meddatabase.onrender.com";
+
 
   useEffect(() => {
     const fetchLogs = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/auditLogs");
+        const response = await axios.get(`${liveUrl}/auditLogs`);
         setLogs(response.data);
         setLoading(false);
 

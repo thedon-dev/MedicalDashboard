@@ -16,6 +16,8 @@ const UserProfile = () => {
   const [showModal, setShowModal] = useState(false);
   const [userType, setUserType] = useState(null);
   const localUrl = "http://localhost:3000";
+  const liveUrl = "https://meddatabase.onrender.com";
+
 
   const isPatient = location.pathname.includes("patients");
   const isDoctor = location.pathname.includes("doctors");
@@ -32,7 +34,7 @@ const UserProfile = () => {
     const fetchUser = async () => {
       if (!userType || !id) return;
       try {
-        const response = await axios.get(`${localUrl}/${userType}/${id}`);
+        const response = await axios.get(`${liveUrl}/${userType}/${id}`);
         setUser(response.data);
       } catch (error) {
         console.error("Error fetching user:", error);
@@ -47,7 +49,7 @@ const UserProfile = () => {
   const fetchDocuments = async (id) => {
     try {
       const response = await axios.get(
-        `${localUrl}/documents/${id}`
+        `${liveUrl}/documents/${id}`
       );
       setDocuments(response.data.documentsSubmitted);
     } catch (error) {
@@ -57,7 +59,7 @@ const UserProfile = () => {
 
   const suspendUser = async (userId) => {
     try {
-      const response = await axios.patch(`${localUrl}/${userType}/${userId}`, {
+      const response = await axios.patch(`${liveUrl}/${userType}/${userId}`, {
         suspended: !user.suspended,
       });
       setUser((prev) => ({ ...prev, suspended: !prev.suspended }));
