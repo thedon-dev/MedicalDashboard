@@ -7,7 +7,7 @@ const RequestDetail = () => {
   const [request, setRequest] = useState(null);
   const [loading, setLoading] = useState(true);
   const [feedback, setFeedback] = useState("");
-  const liveUrl = "https://meddatabase.onrender.com"
+  const liveUrl = "https://meddatabase-1.onrender.com"
   const localUrl = "http://localhost:3000/contactRequests"
   const navigate = useNavigate();
 

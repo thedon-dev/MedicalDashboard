@@ -6,7 +6,7 @@ const FormRequest = () => {
   const [loading, setLoading] = useState(true);
   const requestsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
-  const liveUrl = "https://meddatabase.onrender.com"
+  const liveUrl = "https://meddatabase-1.onrender.com"
   const localUrl = "http://localhost:3000"
 
   useEffect(() => {

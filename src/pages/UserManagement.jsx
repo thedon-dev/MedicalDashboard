@@ -13,7 +13,7 @@ const UserManagement = () => {
   const [recordsPerPage] = useState(5);
   const [showData, setShowData] = useState("patients");
   const navigate = useNavigate();
-  const liveUrl = "https://meddatabase.onrender.com";
+  const liveUrl = "https://meddatabase-1.onrender.com";
   const localUrl = "http://localhost:3000";
 
   useEffect(() => {

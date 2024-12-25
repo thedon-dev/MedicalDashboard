@@ -16,7 +16,7 @@ const UserProfile = () => {
   const [showModal, setShowModal] = useState(false);
   const [userType, setUserType] = useState(null);
   const localUrl = "http://localhost:3000";
-  const liveUrl = "https://meddatabase.onrender.com";
+  const liveUrl = "https://meddatabase-1.onrender.com";
 
 
   const isPatient = location.pathname.includes("patients");

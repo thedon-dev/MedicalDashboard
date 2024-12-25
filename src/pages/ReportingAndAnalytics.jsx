@@ -7,7 +7,7 @@ import FeedbackTable from "../components/ReportsAndAnalytics/FeedbackTable";
 import FeedbackChart from "../components/ReportsAndAnalytics/FeedbackChart";
 
 export const ReportingAndAnalytics = () => {
-  const liveUrl = "https://meddatabase.onrender.com";
+  const liveUrl = "https://meddatabase-1.onrender.com";
   const localUrl = "http://localhost:3000";
   const [loading, setLoading] = useState(true);
   const [usersStatus, setUsersStats] = useState([]);

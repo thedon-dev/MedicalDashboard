@@ -35,7 +35,7 @@ const Dashboard = () => {
     },
   ];
   const localUrl = "http://localhost:3000"
-  const liveurl = "https://"
+  const liveurl = "https://meddatabase-1.onrender.com"
 
   useEffect(()=> {
     window.scrollTo(0, 0);

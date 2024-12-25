@@ -4,7 +4,7 @@ import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
 import TotalRequest from "../components/UserManagementComponents/TotalRequest";
 
 const HealthcareApproval = () => {
-  const liveUrl = "https://meddatabase.onrender.com"
+  const liveUrl = "https://meddatabase-1.onrender.com"
   const localUrl = "http://localhost:3000"
   const [providers, setProviders] = useState([]);
   const [selectedProvider, setSelectedProvider] = useState(null);

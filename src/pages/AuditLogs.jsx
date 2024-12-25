@@ -7,7 +7,7 @@ const AuditLogs = () => {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const logsPerPage = 10;
-  const liveUrl = "https://meddatabase.onrender.com"
+  const liveUrl = "https://meddatabase-1.onrender.com"
   const localUrl = "http://localhost:3000"
 
   useEffect(() => {

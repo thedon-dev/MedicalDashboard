@@ -16,7 +16,7 @@ const VerificationPage = () => {
   const [approvedNum, setApprovedNum] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [paymentsPerPage] = useState(10);
-  const liveUrl = "https://meddatabase.onrender.com"
+  const liveUrl = "https://meddatabase-1.onrender.com"
   const localUrl = "http://localhost:3000"
 
   const handleApproveClick = (transaction) => {
