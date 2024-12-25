@@ -7,11 +7,13 @@ const AuditLogs = () => {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const logsPerPage = 10;
+  const liveUrl = "https://meddatabase.onrender.com"
+  const localUrl = "http://localhost:3000"
 
   useEffect(() => {
     const fetchLogs = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/auditLogs");
+        const response = await axios.get(`${localUrl}/auditLogs`);
         setLogs(response.data);
         setLoading(false);
       } catch (error) {

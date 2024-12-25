@@ -34,9 +34,22 @@ const Dashboard = () => {
       icon: <MdFreeCancellation size={35} color="red" />,
     },
   ];
+  const localUrl = "http://localhost:3000"
+  const liveurl = "https://"
 
   useEffect(()=> {
     window.scrollTo(0, 0);
+
+    const fetchData = async ()=> {
+      try {
+        const doctorData = await axios.get(`${localUrl}/doctors`)
+        console.log(doctorData)
+      } catch (error) {
+        
+      }
+    }
+      
+
   }, [])
   return (
     <div className="">
@@ -44,7 +57,7 @@ const Dashboard = () => {
         <h1 className="text-2xl font-bold">Welcome</h1>
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-10 mt-10">
           {dataSet.map((data, index) => (
-            <div className="shadow-lg rounded p-4 flex gap-3 items-center">
+            <div key={index} className="shadow-lg rounded p-4 flex gap-3 items-center">
               <div
                 className={`p-2 rounded ${data.color} flex justify-center items-center`}
               >

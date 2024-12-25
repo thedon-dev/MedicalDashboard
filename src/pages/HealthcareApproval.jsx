@@ -5,6 +5,7 @@ import TotalRequest from "../components/UserManagementComponents/TotalRequest";
 
 const HealthcareApproval = () => {
   const liveUrl = "https://meddatabase.onrender.com"
+  const localUrl = "http://localhost:3000"
   const [providers, setProviders] = useState([]);
   const [selectedProvider, setSelectedProvider] = useState(null);
   const [message, setMessage] = useState("");
@@ -29,7 +30,7 @@ const HealthcareApproval = () => {
 
     try {
       const response = await axios.get(
-        `${liveUrl}/healthcareapprovals`
+        `${localUrl}/healthcareapprovals`
       );
       const fetchedData = response.data;
       const groupedRequests = fetchedData.reduce((acc, provider) => {
@@ -59,7 +60,7 @@ const HealthcareApproval = () => {
 
   const handleApproval = async (id) => {
     try {
-      await axios.patch(`${liveUrl}/healthcareapprovals/${id}`, {
+      await axios.patch(`${localUrl}/healthcareapprovals/${id}`, {
         status: "Approved",
       });
       const updatedProviders = providers.map((provider) =>
@@ -77,7 +78,7 @@ const HealthcareApproval = () => {
 
   const handleRejection = async (id) => {
     try {
-      await axios.patch(`http://localhost:3000/healthcareapprovals/${id}`, {
+      await axios.patch(`${localUrl}/healthcareapprovals/${id}`, {
         status: "Rejected",
       });
       const updatedProviders = providers.map((provider) =>

@@ -11,7 +11,9 @@ import FormRequest from "./pages/FormRequest";
 import AuditLogs from "./pages/AuditLogs";
 import { ReportingAndAnalytics } from "./pages/ReportingAndAnalytics";
 import Dashboard from "./pages/Dashboard";
-import ProfilePage from "./pages/ProfilePage";
+import ProfilePage from "./pages/AdminProfilePage";
+import UserProfile from "./pages/UserProfile";
+import AdminProfilePage from "./pages/TexstingPage";
 
 function App() {
   return (
@@ -20,6 +22,9 @@ function App() {
         <Routes>
           <Route path="/" element={<AdminLayout />}>
             <Route path="/" element={<LoginPage />} />
+            <Route path="/usermanagement/patients/:id" element={<UserProfile />} />
+            <Route path="/usermanagement/doctors/:id" element={<UserProfile />} />
+            <Route path="/testing" element={<AdminProfilePage />} />
             <Route
               path="/dashboard"
               element={

@@ -4,16 +4,16 @@ import axios from "axios";
 const FormRequest = () => {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
-  const requestPerPage = 10;
+  const requestsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
-  const [requestsPerPage, setRecordsPerPage] = useState(5);
   const liveUrl = "https://meddatabase.onrender.com"
+  const localUrl = "http://localhost:3000"
 
   useEffect(() => {
     const fetchRequests = async () => {
       try {
         const response = await axios.get(
-          `${liveUrl}/contactRequests`
+          `${localUrl}/contactRequests`
         );
         setRequests(response.data);
         setLoading(false);
@@ -48,8 +48,8 @@ const FormRequest = () => {
 
   return (
     <div className="lg:p-4">
-      <h1 className="text-2xl font-bold mb-4">Contact Form Requests</h1>
-      <div className="rounded-lg overflow-hidden shadow-lg">
+      <h1 className="text-xl font-bold mb-4">Requests</h1>
+      <div className="rounded-lg overflow-hidden shadow-lg overflow-x-scroll lg:overflow-x-hidden">
         <table className="min-w-full  border-collapse">
           <thead className="bg-[#3AD1F0]">
             <tr className="text-white">
@@ -61,7 +61,7 @@ const FormRequest = () => {
             </tr>
           </thead>
           <tbody className="">
-            {requests.map((request) => (
+            {currentLogs.map((request) => (
               <tr key={request.id}>
                 <td className="p-2">{request.id}</td>
                 <td className="p-2">{request.name}</td>
@@ -79,6 +79,24 @@ const FormRequest = () => {
             ))}
           </tbody>
         </table>
+      </div>
+      <div className="flex justify-center mt-4">
+        {Array.from(
+          { length: Math.ceil(requests.length / requestsPerPage) },
+          (_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentPage(index + 1)}
+              className={`mx-1 px-3 py-1 border ${
+                currentPage === index + 1
+                  ? "bg-[#3AD1F0] text-white"
+                  : "bg-gray-200 text-gray-700"
+              }`}
+            >
+              {index + 1}
+            </button>
+          )
+        )}
       </div>
     </div>
   );

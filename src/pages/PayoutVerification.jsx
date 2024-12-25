@@ -17,6 +17,7 @@ const VerificationPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [paymentsPerPage] = useState(10);
   const liveUrl = "https://meddatabase.onrender.com"
+  const localUrl = "http://localhost:3000"
 
   const handleApproveClick = (transaction) => {
     setSelectedTransaction(transaction);
@@ -29,7 +30,7 @@ const VerificationPage = () => {
 
     try {
       const response = await axios.get(
-        `${liveUrl}/paymentverification`
+        `${localUrl}/paymentverification`
       );
       setTransactions(response.data);
 

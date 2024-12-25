@@ -47,9 +47,9 @@ const AdminLayout = () => {
       link: "/reports",
     },
     {
-        name: "Payment Verification",
-        link: "/paymentsverification",
-      },
+      name: "Payment Verification",
+      link: "/paymentsverification",
+    },
   ];
 
   const handleLogout = () => {
@@ -67,7 +67,9 @@ const AdminLayout = () => {
       >
         <div className="">
           <div className="justify-between lg:justify-center items-center h-[6.5rem] flex px-8">
-            <h1 className="text-white text-2xl font-bold"><span className="text-black">Mobile</span>Doctor</h1>
+            <h1 className="text-white text-2xl font-bold">
+              <span className="text-black">Mobile</span>Doctor
+            </h1>
             <div className="block lg:hidden">
               <button className="" onClick={() => setNavOpen(!isNavOpen)}>
                 <FaX className="text-white" size={22} />
@@ -79,7 +81,9 @@ const AdminLayout = () => {
               <div
                 key={index}
                 className={`${
-                  location.pathname === link.link
+                  location.pathname === link.link ||
+                  (location.pathname.includes(link.link) &&
+                    (location.pathname.includes("/doctors") || location.pathname.includes("/patients")))
                     ? "border-l-[6px] border-white"
                     : ""
                 } w-full px-5 `}
@@ -138,7 +142,7 @@ const AdminLayout = () => {
                 <div className="top-20 w-full absolute rounded-lg p-3 z-20 flex flex-col divide-y-2 bg-white shadow-lg">
                   <Link
                     to="/profile"
-                    onClick={()=> setDropDownOpen(!dropDownOpen)}
+                    onClick={() => setDropDownOpen(!dropDownOpen)}
                     className="flex text-lg font-semibold justify-between py-5"
                   >
                     <BiUser className="" size={25} /> Profile{" "}

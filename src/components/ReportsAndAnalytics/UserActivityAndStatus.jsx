@@ -7,12 +7,13 @@ const UserActivityAndStatus = ({ userData }) => {
   const totalPages = Math.ceil(userData.length / dataPerPage);
   const indexOfLastData = currentPage * dataPerPage;
   const indexOfFirstData = indexOfLastData - dataPerPage;
+  const currentLogs = userData.slice(indexOfFirstData, indexOfLastData);
 
   return (
     <>
-      <div className="mt-6 rounded-lg bg-[#3AD1F0] overflow-hidden shadow-lg overflow-x-scroll lg:overflow-x-hidden">
+      <div className="mt-6 rounded-lg overflow-hidden shadow-lg overflow-x-scroll lg:overflow-x-hidden">
         <table className="w-full border-collapse border-gray-300">
-          <thead>
+          <thead className="bg-[#3AD1F0]">
             <tr className="text-white">
               <th className="px-4 py-2 text-start">User ID</th>
               <th className="px-4 py-2 text-start">Name</th>
@@ -22,7 +23,7 @@ const UserActivityAndStatus = ({ userData }) => {
             </tr>
           </thead>
           <tbody className="bg-white">
-            {userData.map((user) => (
+            {currentLogs.map((user) => (
               <tr key={user.id}>
                 <td className="px-4 py-2">{user.id}</td>
                 <td className="text-nowrap px-4 py-2">{user.name}</td>

@@ -5,6 +5,7 @@
       "name": "Samuel Israel",
       "location": "Port-Harcourt",
       "height": 6,
+      "suspended": false,
       "weight": 30,
       "details": {
         "bio": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui quo cum velit officia molestias, accusamus nemo saepe officiis ea odio.",
@@ -17,6 +18,7 @@
       "name": "Michael Josh",
       "location": "Port-Harcourt",
       "height": 6,
+      "suspended": true,
       "weight": 30,
       "details": {
         "bio": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui quo cum velit officia molestias, accusamus nemo saepe officiis ea odio.",
@@ -29,6 +31,7 @@
       "name": "Halimat Isa",
       "location": "Port-Harcourt",
       "height": 6,
+      "suspended": false,
       "weight": 30,
       "details": {
         "bio": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui quo cum velit officia molestias, accusamus nemo saepe officiis ea odio.",
@@ -41,6 +44,7 @@
       "name": "Johnson Fish",
       "location": "Port-Harcourt",
       "height": 6,
+      "suspended": false,
       "weight": 30,
       "details": {
         "bio": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui quo cum velit officia molestias, accusamus nemo saepe officiis ea odio.",
@@ -53,22 +57,132 @@
     {
       "id": "1",
       "name": "Dr. Silva Maddison",
-      "tag": "patient",
+      "tag": "doctor",
+      "suspended": false,
       "details": {
         "bio": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui quo cum velit officia molestias, accusamus nemo saepe officiis ea odio.",
         "rating": 5,
         "yearsOfExperience": 5
-      }
+      },
+      "documents": [
+        {
+          "name": "Medical License",
+          "url": "/docs/medical-license.pdf"
+        },
+        {
+          "name": "Identity Card",
+          "url": "/docs/id-card.pdf"
+        }
+      ]
     },
     {
       "id": "2",
       "name": "Dr. Smith Maddison",
       "tag": "doctor",
+      "suspended": false,
       "details": {
         "bio": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui quo cum velit officia molestias, accusamus nemo saepe officiis ea odio.",
         "rating": 3,
         "yearsOfExperience": 5
-      }
+      },
+      "documents": [
+        {
+          "name": "Medical License",
+          "url": "/docs/medical-license.pdf"
+        },
+        {
+          "name": "Identity Card",
+          "url": "/docs/id-card.pdf"
+        }
+      ]
+    }
+  ],
+  "documents": [
+    {
+      "id": "1",
+      "userId": "1",
+      "documentsSubmitted": [
+        {
+          "name": "Medical License",
+          "url": "/docs/medical-license.pdf"
+        },
+        {
+          "name": "Identity Card",
+          "url": "/docs/id-card.pdf"
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "userId": "2",
+      "documentsSubmitted": [
+        {
+          "name": "Medical License",
+          "url": "/docs/medical-license.pdf"
+        },
+        {
+          "name": "Identity Card",
+          "url": "/docs/id-card.pdf"
+        }
+      ]
+    }
+  ],
+  "pharmacy": [
+    {
+      "id": "1",
+      "name": "Dr. Silva Maddison",
+      "tag": "doctor",
+      "suspended": false,
+      "details": {
+        "bio": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui quo cum velit officia molestias, accusamus nemo saepe officiis ea odio.",
+        "rating": 5,
+        "yearsOfExperience": 5
+      },
+      "documents": [
+        {
+          "name": "Medical License",
+          "url": "/docs/medical-license.pdf"
+        },
+        {
+          "name": "Identity Card",
+          "url": "/docs/id-card.pdf"
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "name": "Dr. Smith Maddison",
+      "tag": "doctor",
+      "suspended": false,
+      "details": {
+        "bio": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui quo cum velit officia molestias, accusamus nemo saepe officiis ea odio.",
+        "rating": 3,
+        "yearsOfExperience": 5
+      },
+      "documents": [
+        {
+          "name": "Medical License",
+          "url": "/docs/medical-license.pdf"
+        },
+        {
+          "name": "Identity Card",
+          "url": "/docs/id-card.pdf"
+        }
+      ]
+    }
+  ],
+  "wallets": [
+    {
+      "id": "1",
+      "amount": 2572
+    },
+    {
+      "id": "2",
+      "amount": 56000
+    },
+    {
+      "id": "3",
+      "amount": 4000
     }
   ],
   "healthcareapprovals": [
@@ -92,7 +206,7 @@
       "id": "2",
       "name": "MedCare Pharmacy",
       "type": "Pharmacy",
-      "status": "Approved",
+      "status": "Rejected",
       "documents": [
         {
           "name": "Pharmacy License",

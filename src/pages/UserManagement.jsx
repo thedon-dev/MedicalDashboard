@@ -13,13 +13,13 @@ const UserManagement = () => {
   const [recordsPerPage] = useState(5);
   const [showData, setShowData] = useState("patients");
   const navigate = useNavigate();
-  const liveUrl = "https://meddatabase.onrender.com"
-  const localUrl = "http://localhost:3000/"
+  const liveUrl = "https://meddatabase.onrender.com";
+  const localUrl = "http://localhost:3000";
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get(`${liveUrl}/${showData}`);
+        const response = await axios.get(`${localUrl}/${showData}`);
         showData == "patients"
           ? setPatients(response.data)
           : setDoctors(response.data);
@@ -70,7 +70,7 @@ const UserManagement = () => {
   return (
     <div className="p-4">
       <div className="flex gap-3 mb-10">
-        {["patients", "doctors"].map((data, index) => (
+        {["patients", "doctors", "pharmarcy"].map((data, index) => (
           <button
             key={index}
             className={`px-4 py-3 ${
@@ -182,14 +182,14 @@ const UserManagement = () => {
 
       <div>
         {showData == "patients" ? (
-          <div className="grid lg:grid-cols-2 gap-5">
+          <div className="grid lg:grid-cols-3 gap-5">
             {currentRecords.map((patient, index) => (
               <div
                 key={index}
-                className="bg-white overflow-hidden grid grid-cols-5 rounded-lg shadow"
+                className="bg-white overflow-hidden lg:grid lg:grid-cols-5 rounded-lg shadow"
               >
                 <div
-                  className="overflow-hidden w-full col-span-2"
+                  className="overflow-hidden w-full h-full col-span-2"
                   style={{
                     backgroundImage: `url(${user})`,
                     backgroundSize: "cover",
@@ -197,15 +197,17 @@ const UserManagement = () => {
                     backgroundRepeat: "no-repeat",
                   }}
                 ></div>
-                <div className="col-span-3 p-4 flex flex-col gap-2 justify-between w-full">
+                <div className="col-span-3 p-4 flex flex-col gap-1 justify-between w-full">
                   <h4 className="text-xl font-semibold">{patient.name}</h4>
                   <span className="">location: {patient.location}</span>
                   <div className="flex gap-2">
                     <span>Height: {patient.height}ft</span>
                     <span>Weight: {patient.weight}kg</span>
                   </div>
-                  <p className="">{patient.details.bio}</p>
-                  <Link to={`/users/${patient.id}`} className=" text-center w-full py-2 rounded bg-[#3AD1F0] mt-2 font-semibold">
+                  <Link
+                    to={`/usermanagement/patients/${patient.id}`}
+                    className="text-white text-center w-full py-2 rounded bg-[#3AD1F0] mt-2 font-semibold"
+                  >
                     View Profile
                   </Link>
                 </div>
@@ -213,14 +215,14 @@ const UserManagement = () => {
             ))}
           </div>
         ) : (
-          <div className="grid lg:grid-cols-2 gap-5">
+          <div className="grid lg:grid-cols-3 gap-5">
             {doctors.map((doctor, index) => (
               <div
                 key={index}
-                className="bg-white grid grid-cols-5 rounded-lg shadow"
+                className="bg-white lg:grid grid-cols-5 rounded-lg shadow"
               >
                 <div
-                  className="overflow-hidden w-full col-span-2"
+                  className="overflow-hidden w-full h-full col-span-2"
                   style={{
                     backgroundImage: `url(${user})`,
                     backgroundSize: "cover",
@@ -232,7 +234,53 @@ const UserManagement = () => {
                 </div>
                 <div className="col-span-3 p-4 flex flex-col gap-2 justify-between w-full">
                   <h4 className="text-xl font-semibold">{doctor.name}</h4>
-                  <div className="flex">
+                  <div className="flex items-center gap-2">
+                    <p className="text-nowrap">Average Rating: </p>
+                    <div className="flex items-center gap-0.5">
+                      {Array.from({ length: 5 }, (_, index) => (
+                        <span key={index} className="flex">
+                          {index < doctor.details.rating ? (
+                            <FaStar className="text-green-500" size={15} />
+                          ) : (
+                            <FaRegStar className="text-gray-400" size={15} />
+                          )}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  <Link
+                    to={`/usermanagement/doctors/${doctor.id}`}
+                    className="w-full text-center py-2 rounded text-white bg-[#3AD1F0] mt-2 font-semibold"
+                  >
+                    View Profile
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+        {showData === "pharmarcy" && currentRecords > 0 && (
+          <div>
+            {doctors.map((doctor, index) => (
+              <div
+                key={index}
+                className="bg-white lg:grid grid-cols-5 rounded-lg shadow"
+              >
+                <div
+                  className="overflow-hidden w-full h-[300px] col-span-2"
+                  style={{
+                    backgroundImage: `url(${user})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    backgroundRepeat: "no-repeat",
+                  }}
+                >
+                  {/* <img src={user} alt="" className="object-cover"/> */}
+                </div>
+                <div className="col-span-3 p-4 flex flex-col gap-2 justify-between w-full">
+                  <h4 className="text-xl font-semibold">{doctor.name}</h4>
+                  <div className="flex items-center gap-2">
+                    <p>Average Rating: </p>
                     {Array.from({ length: 5 }, (_, index) => (
                       <span key={index} className="flex">
                         {index < doctor.details.rating ? (
@@ -245,9 +293,12 @@ const UserManagement = () => {
                   </div>
 
                   <p className="">{doctor.details.bio}</p>
-                  <button className="w-full py-2 rounded bg-[#3AD1F0] mt-2 font-semibold">
+                  <Link
+                    to={`/usermanagement/doctors/${doctor.id}`}
+                    className="w-full text-center py-2 rounded text-white bg-[#3AD1F0] mt-2 font-semibold"
+                  >
                     View Profile
-                  </button>
+                  </Link>
                 </div>
               </div>
             ))}
