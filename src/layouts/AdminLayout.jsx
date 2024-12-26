@@ -24,31 +24,31 @@ const AdminLayout = () => {
   const asideLinks = [
     {
       name: "Dashboard",
-      link: "/dashboard",
+      link: "/admin/dashboard",
     },
     {
       name: "Healthcare Approval",
-      link: "/healthcareapproval",
+      link: "/admin/healthcareapproval",
     },
     {
       name: "User Management",
-      link: "/usermanagement",
+      link: "/admin/usermanagement",
     },
     {
       name: "Form Requests",
-      link: "/requests",
+      link: "/admin/requests",
     },
     {
       name: "Audit Logs",
-      link: "/logs",
+      link: "/admin/logs",
     },
     {
       name: "Reports",
-      link: "/reports",
+      link: "/admin/reports",
     },
     {
       name: "Payment Verification",
-      link: "/paymentsverification",
+      link: "/admin/paymentsverification",
     },
   ];
 
@@ -63,16 +63,16 @@ const AdminLayout = () => {
       <aside
         className={`${
           isNavOpen ? "left-0" : "-left-[100%]"
-        }  bg-[#3AD1F0] w-[15rem] h-screen fixed lg:left-0 z-20 top-0 transition-all duration-300`}
+        }  bg-[#3AD1F0] shadow-md lg:shadow-none w-[15rem] h-screen fixed lg:left-0 z-20 top-0 transition-all duration-300`}
       >
         <div className="">
-          <div className="justify-between lg:justify-center items-center h-[6.5rem] flex px-8">
-            <h1 className="text-white text-2xl font-bold">
+          <div className="justify-between lg:justify-center items-center h-[6.5rem] flex px-5">
+            <h1 className="text-white text-lg lg:text-2xl font-bold">
               <span className="text-black">Mobile</span>Doctor
             </h1>
-            <div className="block lg:hidden">
+            <div className="flex lg:hidden items-center">
               <button className="" onClick={() => setNavOpen(!isNavOpen)}>
-                <FaX className="text-white" size={22} />
+                <FaX className="text-white" size={18} />
               </button>
             </div>
           </div>
@@ -110,7 +110,7 @@ const AdminLayout = () => {
         </div>
       </aside>
       <div className="lg:ml-[15rem] flex-grow shadow-2xl">
-        <header className="shadow-lg w-full py-8 px-5 lg:px-10">
+        <header className="shadow-md w-full py-8 px-5 lg:px-10">
           <div className="flex items-center justify-between h-full">
             <div className="lg:hidden">
               <button className="" onClick={() => setNavOpen(!isNavOpen)}>
@@ -123,7 +123,7 @@ const AdminLayout = () => {
               {headText === "KYC Management" && <MdManageAccounts size={25} />}
               {headText === "transactions" && <FaMoneyBill size={25} />}
               {headText === "kpi" && <CgChart size={25} />}
-              <p className="text-3xl font-bold capitalize">{headText}</p>
+              <p className="text-2xl font-bold capitalize">{headText}</p>
             </div>
             <div className="relative">
               <button
@@ -131,7 +131,7 @@ const AdminLayout = () => {
                 onClick={() => setDropDownOpen(!dropDownOpen)}
               >
                 <div className="text-start">
-                  <p className="font-semibold text-2xl">Admin</p>
+                  <p className="font-semibold text-xl">Admin</p>
                 </div>
                 <img className="h-10 w-auto rounded-full" src={img} alt="" />
                 <div className="rounded-full">

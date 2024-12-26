@@ -20,13 +20,27 @@ function App() {
     <>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<AdminLayout />}>
-            <Route path="/" element={<LoginPage />} />
-            <Route path="/usermanagement/patients/:id" element={<UserProfile />} />
-            <Route path="/usermanagement/doctors/:id" element={<UserProfile />} />
-            <Route path="/testing" element={<AdminProfilePage />} />
+          <Route path="/" element={<LoginPage />} />
+          <Route path="/admin" element={<AdminLayout />}>
             <Route
-              path="/dashboard"
+              path="/admin/usermanagement/patients/:id"
+              element={
+                <ProtectedRoute>
+                  <UserProfile />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/usermanagement/doctors/:id"
+              element={
+                <ProtectedRoute>
+                  <UserProfile />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/admin/testing" element={<AdminProfilePage />} />
+            <Route
+              path="/admin/dashboard"
               element={
                 <ProtectedRoute>
                   <Dashboard />
@@ -34,7 +48,7 @@ function App() {
               }
             />
             <Route
-              path="/healthcareapproval"
+              path="/admin/healthcareapproval"
               element={
                 <ProtectedRoute>
                   <HealthcareApproval />
@@ -42,7 +56,7 @@ function App() {
               }
             />
             <Route
-              path="/usermanagement"
+              path="/admin/usermanagement"
               element={
                 <ProtectedRoute>
                   <UserManagement />
@@ -50,7 +64,7 @@ function App() {
               }
             />
             <Route
-              path="/requests"
+              path="/admin/requests"
               element={
                 <ProtectedRoute>
                   <FormRequest />
@@ -58,7 +72,7 @@ function App() {
               }
             />
             <Route
-              path="/logs"
+              path="/admin/logs"
               element={
                 <ProtectedRoute>
                   <AuditLogs />
@@ -66,7 +80,7 @@ function App() {
               }
             />
             <Route
-              path="/reports"
+              path="/admin/reports"
               element={
                 <ProtectedRoute>
                   <ReportingAndAnalytics />
@@ -74,7 +88,7 @@ function App() {
               }
             />
             <Route
-              path="/paymentsverification"
+              path="/admin/paymentsverification"
               element={
                 <ProtectedRoute>
                   <PayoutVerification />
@@ -82,7 +96,7 @@ function App() {
               }
             />
             <Route
-              path="/profile"
+              path="/admin/profile"
               element={
                 <ProtectedRoute>
                   <ProfilePage />

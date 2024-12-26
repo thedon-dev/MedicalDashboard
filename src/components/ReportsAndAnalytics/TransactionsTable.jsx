@@ -20,7 +20,7 @@ const TransactionsTable = ({ transactions }) => {
               <th className="px-4 py-2 text-start">Date</th>
             </tr>
           </thead>
-          <tbody className="bg-white">
+          <tbody className="bg-white text-nowrap">
             {currentLogs.map((txn) => (
               <tr key={txn.id}>
                 <td className="px-4 py-2">{txn.id}</td>

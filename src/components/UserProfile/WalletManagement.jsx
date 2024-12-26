@@ -68,7 +68,7 @@ const WalletManagement = ({ setWalletModalOpen, id }) => {
 
   return (
     <div className="">
-      <div className="border border-red-500 fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center">
+      <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center">
         <div className="bg-white p-8 rounded shadow-lg w-[400px]">
           <h2 className="text-xl font-bold">Manage Wallet</h2>
           <div className="w-full h-[10rem] grid place-content-center text-white bg-[#177588] rounded-lg my-5">

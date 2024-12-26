@@ -10,7 +10,7 @@ const FeedbackTable = ({ feedback }) => {
   return (
     <>
       <div className="mt-5  rounded-lg shadow-lg overflow-hidden overflow-x-scroll lg:overflow-x-hidden">
-        <table className="w-full border-collapse bg-[#3AD1F0]">
+        <table className="w-full text-nowrap border-collapse bg-[#3AD1F0]">
           <thead>
             <tr className="text-white">
               <th className="text-start px-4 py-2">User</th>

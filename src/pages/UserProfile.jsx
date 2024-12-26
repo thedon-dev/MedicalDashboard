@@ -148,14 +148,14 @@ const UserProfile = () => {
 
       {showModal && (
         <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white p-8 rounded-lg w-[500px] max-h-[80vh] overflow-y-auto">
+          <div className="bg-white p-8 rounded-lg w-[80%] lg:w-[500px] max-h-[80vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-semibold">User Documents</h2>
               <button
                 className="text-red-600 text-lg font-bold"
                 onClick={() => setShowModal(false)}
               >
-                <FaX />
+                <FaX size={20}/>
               </button>
             </div>
             {documents.length > 0 ? (

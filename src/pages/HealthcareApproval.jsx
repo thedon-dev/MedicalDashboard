@@ -152,7 +152,7 @@ const HealthcareApproval = () => {
 
           {!isLoading && !error && currentProviders.length > 0 && (
             <div className="w-full">
-              <div className="w-full bg-white rounded-lg overflow-hidden shadow-md">
+              <div className="w-full bg-white rounded-lg overflow-hidden shadow-md overflow-x-scroll lg:overflow-x-hidden">
                 <table className="w-full border-collapse">
                   <thead>
                     <tr className="bg-[#3AD1F0] text-white text-sm uppercase">

@@ -23,7 +23,6 @@ const UserManagement = () => {
         showData == "patients"
           ? setPatients(response.data)
           : setDoctors(response.data);
-        console.log(showData);
       } catch (error) {
         console.error("Error fetching users:", error);
       } finally {
@@ -186,10 +185,10 @@ const UserManagement = () => {
             {currentRecords.map((patient, index) => (
               <div
                 key={index}
-                className="bg-white overflow-hidden lg:grid lg:grid-cols-5 rounded-lg shadow"
+                className="bg-white h-fit overflow-hidden lg:grid lg:grid-cols-5 rounded-lg shadow"
               >
                 <div
-                  className="overflow-hidden w-full h-full col-span-2"
+                  className="overflow-hidden w-full lg:h-full col-span-2"
                   style={{
                     backgroundImage: `url(${user})`,
                     backgroundSize: "cover",
@@ -205,7 +204,7 @@ const UserManagement = () => {
                     <span>Weight: {patient.weight}kg</span>
                   </div>
                   <Link
-                    to={`/usermanagement/patients/${patient.id}`}
+                    to={`/admin/usermanagement/patients/${patient.id}`}
                     className="text-white text-center w-full py-2 rounded bg-[#3AD1F0] mt-2 font-semibold"
                   >
                     View Profile

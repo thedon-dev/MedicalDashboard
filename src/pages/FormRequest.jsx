@@ -67,7 +67,7 @@ const FormRequest = () => {
                 <td className="p-2">{request.name}</td>
                 <td className="p-2">{request.type}</td>
                 <td className="p-2">{request.status}</td>
-                <td className="p-2">
+                <td className="p-2 text-nowrap">
                   <a
                     href={`/requests/${request.id}`}
                     className="text-blue-600 hover:underline"

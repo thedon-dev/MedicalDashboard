@@ -35,10 +35,10 @@ const AuditLogs = () => {
   }
 
   return (
-    <div className="p-5">
+    <div className="">
       <ActionStatsWithChart />
       <h1 className="text-2xl font-bold mb-5">Audit Logs</h1>
-      <div className="rounded-lg overflow-hidden">
+      <div className="rounded-lg overflow-hidden overflow-x-scroll lg:overflow-x-hidden">
         <table className="bg-[#3AD1F0] w-full border-collapse border border-gray-300">
           <thead>
             <tr className="text-white">

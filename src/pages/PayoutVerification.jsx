@@ -165,7 +165,7 @@ const VerificationPage = () => {
       {!isLoading && !error && currentLogs.length > 0 && (
         <div className="w-full">
           <div className="w-full bg-white rounded-lg overflow-hidden shadow-md overflow-x-scroll lg:overflow-auto">
-            <table className="w-full border-collapse">
+            <table className="w-full border-collapse text-nowrap">
               <thead>
                 <tr className="bg-black text-white text-sm uppercase">
                   <th className="py-3 px-4 text-left">Provider</th>
