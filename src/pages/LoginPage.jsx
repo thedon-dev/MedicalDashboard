@@ -50,7 +50,7 @@ const LoginPage = () => {
       if (response.success) {
         localStorage.setItem("authToken", response.token);
         alert("Login successful!");
-        navigate("/dashboard");
+        navigate("/admin/dashboard");
       } else {
         setErrors({ general: "Invalid email or password." });
       }
@@ -75,71 +75,73 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="mt-32 flex items-center justify-center">
-      <div className="bg-white p-6 rounded shadow-lg max-w-md w-full">
-        <h1 className="text-2xl font-bold mb-4 text-center">Admin Sign In</h1>
-        {errors.general && (
-          <p className="text-red-500 text-center mb-4">{errors.general}</p>
-        )}
-        <form onSubmit={handleSubmit} noValidate>
-          <div className="mb-4">
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={(e) =>
-                setFormData({ ...formData, email: e.target.value })
-              }
-              className={`mt-1 block w-full px-4 py-2 border rounded ${
-                errors.email ? "border-red-500" : "border-gray-300"
+    <div className="flex h-screen w-screen items-center justify-center">
+      <div className="w-[90%] flex items-center justify-center mx-auto">
+        <div className="bg-white p-6 rounded shadow-lg max-w-md w-full">
+          <h1 className="text-2xl font-bold mb-4 text-center">Admin Sign In</h1>
+          {errors.general && (
+            <p className="text-red-500 text-center mb-4">{errors.general}</p>
+          )}
+          <form onSubmit={handleSubmit} noValidate>
+            <div className="mb-4">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Email
+              </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={(e) =>
+                  setFormData({ ...formData, email: e.target.value })
+                }
+                className={`mt-1 block w-full px-4 py-2 border rounded ${
+                  errors.email ? "border-red-500" : "border-gray-300"
+                }`}
+              />
+              {errors.email && (
+                <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+              )}
+            </div>
+            <div className="mb-4">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Password
+              </label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={(e) =>
+                  setFormData({ ...formData, password: e.target.value })
+                }
+                className={`mt-1 block w-full px-4 py-2 border rounded ${
+                  errors.password ? "border-red-500" : "border-gray-300"
+                }`}
+              />
+              {errors.password && (
+                <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+              )}
+            </div>
+            <button
+              type="submit"
+              disabled={loading}
+              className={`w-full py-2 px-4 text-white rounded ${
+                loading
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-blue-500 hover:bg-blue-600"
               }`}
-            />
-            {errors.email && (
-              <p className="text-red-500 text-sm mt-1">{errors.email}</p>
-            )}
-          </div>
-          <div className="mb-4">
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700"
             >
-              Password
-            </label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={(e) =>
-                setFormData({ ...formData, password: e.target.value })
-              }
-              className={`mt-1 block w-full px-4 py-2 border rounded ${
-                errors.password ? "border-red-500" : "border-gray-300"
-              }`}
-            />
-            {errors.password && (
-              <p className="text-red-500 text-sm mt-1">{errors.password}</p>
-            )}
-          </div>
-          <button
-            type="submit"
-            disabled={loading}
-            className={`w-full py-2 px-4 text-white rounded ${
-              loading
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-blue-500 hover:bg-blue-600"
-            }`}
-          >
-            {loading ? "Signing In..." : "Sign In"}
-          </button>
-        </form>
+              {loading ? "Signing In..." : "Sign In"}
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );

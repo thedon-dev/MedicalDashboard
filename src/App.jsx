@@ -4,7 +4,6 @@ import LoginPage from "./pages/LoginPage";
 import PayoutVerification from "./pages/PayoutVerification";
 import HealthcareApproval from "./pages/HealthcareApproval";
 import UserManagement from "./pages/UserManagement";
-import WalletManagement from "./pages/WalletManagement";
 import FeedbackManagement from "./pages/FeedbackManagement";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import FormRequest from "./pages/FormRequest";
@@ -100,6 +99,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <ProfilePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/feedbacksmanagement"
+              element={
+                <ProtectedRoute>
+                  <FeedbackManagement />
                 </ProtectedRoute>
               }
             />

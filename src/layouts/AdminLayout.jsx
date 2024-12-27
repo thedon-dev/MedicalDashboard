@@ -141,7 +141,7 @@ const AdminLayout = () => {
               {dropDownOpen && (
                 <div className="top-20 w-full absolute rounded-lg p-3 z-20 flex flex-col divide-y-2 bg-white shadow-lg">
                   <Link
-                    to="/profile"
+                    to="/admin/profile"
                     onClick={() => setDropDownOpen(!dropDownOpen)}
                     className="flex text-lg font-semibold justify-between py-5"
                   >

@@ -200,7 +200,8 @@
           "name": "Government ID",
           "url": "https://example.com/doc2.pdf"
         }
-      ]
+      ],
+      "resolved": true
     },
     {
       "id": "2",
@@ -395,6 +396,67 @@
       "rating": 3,
       "comments": "Average service",
       "date": "2024-12-11"
+    }
+  ],
+  "mainfeedbackss": [
+    {
+      "id": 1,
+      "user": "Dr. Smith",
+      "type": "Compliments",
+      "comment": "Great service!",
+      "resolved": false
+    },
+    {
+      "id": 2,
+      "user": "Lab A",
+      "type": "Complaints",
+      "comment": "Delay in results.",
+      "resolved": false
+    },
+    {
+      "id": 3,
+      "user": "Patient X",
+      "type": "Suggestions",
+      "comment": "Add more doctors.",
+      "resolved": false
+    }
+  ],
+  "providersfeedback": [
+    {
+      "id": "1",
+      "userId": "2",
+      "providerType": "doctor",
+      "feedbackText": "Great consultation experience!",
+      "rating": 5,
+      "resolved": false,
+      "timestamp": "2024-12-21T10:00:00Z"
+    },
+    {
+      "id": "2",
+      "userId": "3",
+      "providerType": "pharmacy",
+      "feedbackText": "Quick service but stock was limited.",
+      "rating": 4,
+      "resolved": true,
+      "timestamp": "2024-12-20T12:00:00Z"
+    },
+    {
+      "id": "3",
+      "userId": "4",
+      "providerType": "doctor",
+      "feedbackText": "Doctor was attentive and thorough.",
+      "rating": 5,
+      "resolved": false,
+      "timestamp": "2024-12-22T09:30:00Z"
+    },
+    {
+      "id": "4",
+      "userId": "5",
+      "providerType": "pharmacy",
+      "feedbackText": "Helpful staff but long wait time.",
+      "rating": 3,
+      "resolved": false,
+      "timestamp": "2024-12-18T14:30:00Z"
     }
   ]
 }

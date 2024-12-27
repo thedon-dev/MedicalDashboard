@@ -5,6 +5,7 @@ import TransactionsTable from "../components/ReportsAndAnalytics/TransactionsTab
 import FinancialChart from "../components/ReportsAndAnalytics/FinancialSummary";
 import FeedbackTable from "../components/ReportsAndAnalytics/FeedbackTable";
 import FeedbackChart from "../components/ReportsAndAnalytics/FeedbackChart";
+import { Link } from "react-router-dom";
 
 export const ReportingAndAnalytics = () => {
   const liveUrl = "https://meddatabase-1.onrender.com";
@@ -35,9 +36,7 @@ export const ReportingAndAnalytics = () => {
       }
 
       try {
-        const responseTransactions = await axios.get(
-          `${liveUrl}/transactions`
-        );
+        const responseTransactions = await axios.get(`${liveUrl}/transactions`);
         setUserTransactions(responseTransactions.data);
 
         const credits = responseTransactions.data.filter(
@@ -134,7 +133,10 @@ export const ReportingAndAnalytics = () => {
       </div>
       <div className="mt-10 lg:grid lg:grid-cols-5 gap-10">
         <div className="col-span-3">
-          <h3 className="text-xl font-bold">Feedbacks</h3>
+          <div className="flex justify-between">
+            <h3 className="text-xl font-bold">Feedbacks</h3>
+            <Link to="/admin/feedbacksmanagement" className="text-blue-700 underline underline-offset-4">Manage Feedbacks</Link>
+          </div>
           {!loading ? (
             <div>
               <FeedbackTable feedback={userFeedback} />
