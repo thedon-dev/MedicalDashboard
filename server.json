@@ -206,7 +206,7 @@
       "id": "2",
       "name": "MedCare Pharmacy",
       "type": "Pharmacy",
-      "status": "Rejected",
+      "status": "Pending",
       "documents": [
         {
           "name": "Pharmacy License",
@@ -230,7 +230,7 @@
       "id": "4",
       "name": "Evergreen Pharmacy",
       "type": "Pharmacy",
-      "status": "Approved",
+      "status": "Pending",
       "documents": [
         {
           "name": "Laboratory Accreditation",
@@ -279,7 +279,7 @@
       "id": "2",
       "user": "Jane Smith",
       "amount": 250.75,
-      "status": "Approved",
+      "status": "Pending",
       "reference": "PAY67890",
       "type": "Payout",
       "createdAt": "2024-12-05T09:00:00Z"
@@ -297,7 +297,7 @@
       "id": "4",
       "user": "Dr. Daniel Johnson",
       "amount": 900,
-      "status": "Approved",
+      "status": "Pending",
       "reference": "PAY67890",
       "type": "Payout",
       "createdAt": "2024-12-05T09:00:00Z"
