@@ -104,7 +104,7 @@ export const ReportingAndAnalytics = () => {
         <div className="mt-10">
           <div className="lg:flex gap-5 lg:justify-between">
             <h3 className="text-xl font-bold">Transactions</h3>
-            <div className="grid grid-cols-3 gap-2 lg:gap-5 w-full lg:w-[50%] mt-5 lg:mt-0">
+            <div className="grid grid-cols-3 gap-2 lg:gap-5 w-full lg:w-[90%] 2xl:w-[70%] mt-5 lg:mt-0">
               {filterStates.map((state, index) => (
                 <button
                   key={index}

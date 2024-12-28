@@ -67,9 +67,9 @@ const UserManagement = () => {
   }
 
   return (
-    <div className="p-4">
+    <div className="">
       <div className="flex gap-3 mb-10">
-        {["patients", "doctors", "pharmarcy"].map((data, index) => (
+        {[ "doctors", "patients", "pharmarcy", "laboratory", "therapist"].map((data, index) => (
           <button
             key={index}
             className={`px-4 py-3 ${
@@ -180,12 +180,12 @@ const UserManagement = () => {
       </div>
 
       <div>
-        {showData == "patients" ? (
-          <div className="grid lg:grid-cols-3 gap-5">
+        {showData == "patients" && (
+          <div className="grid md:flex flex-wrap gap-5">
             {currentRecords.map((patient, index) => (
               <div
                 key={index}
-                className="bg-white h-fit overflow-hidden lg:grid lg:grid-cols-5 rounded-lg shadow"
+                className="bg-white min-w-[20rem] flex-shrink h-fit overflow-hidden lg:grid lg:grid-cols-5 rounded-lg shadow"
               >
                 <div
                   className="overflow-hidden w-full lg:h-full col-span-2"
@@ -213,12 +213,13 @@ const UserManagement = () => {
               </div>
             ))}
           </div>
-        ) : (
-          <div className="grid lg:grid-cols-3 gap-5">
+        )}
+        {showData == "patients" && (
+          <div className="flex flex-wrap gap-5">
             {doctors.map((doctor, index) => (
               <div
                 key={index}
-                className="bg-white lg:grid grid-cols-5 rounded-lg shadow"
+                className={`${index > 0 && "mt-5 lg:mt-0"} overflow-hidden bg-white md:w-[20rem] lg:grid grid-cols-5 rounded-lg shadow`}
               >
                 <div
                   className="overflow-hidden w-full h-full col-span-2"
@@ -229,11 +230,10 @@ const UserManagement = () => {
                     backgroundRepeat: "no-repeat",
                   }}
                 >
-                  {/* <img src={user} alt="" className="object-cover"/> */}
                 </div>
                 <div className="col-span-3 p-4 flex flex-col gap-2 justify-between w-full">
                   <h4 className="text-xl font-semibold">{doctor.name}</h4>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <p className="text-nowrap">Average Rating: </p>
                     <div className="flex items-center gap-0.5">
                       {Array.from({ length: 5 }, (_, index) => (
@@ -258,6 +258,7 @@ const UserManagement = () => {
             ))}
           </div>
         )}
+
         {showData === "pharmarcy" && currentRecords > 0 && (
           <div>
             {doctors.map((doctor, index) => (

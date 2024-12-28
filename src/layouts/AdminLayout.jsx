@@ -63,10 +63,10 @@ const AdminLayout = () => {
       <aside
         className={`${
           isNavOpen ? "left-0" : "-left-[100%]"
-        }  bg-[#3AD1F0] shadow-md lg:shadow-none w-[15rem] h-screen fixed lg:left-0 z-20 top-0 transition-all duration-300`}
+        }  bg-[#3AD1F0] shadow-md custom-scrollbar h-screen max-h-screen lg:shadow-none md:w-[10rem] lg:w-[15rem] fixed overflow-y-auto lg:left-0 z-20 top-0 transition-all duration-300`}
       >
-        <div className="">
-          <div className="justify-between lg:justify-center items-center h-[6.5rem] flex px-5">
+        <div className=" flex flex-col">
+          <div className="sticky top-0 bg-[#3AD1F0] justify-between lg:justify-center items-center h-[5.5rem] flex px-5">
             <h1 className="text-white text-lg lg:text-2xl font-bold">
               <span className="text-black">Mobile</span>Doctor
             </h1>
@@ -76,14 +76,15 @@ const AdminLayout = () => {
               </button>
             </div>
           </div>
-          <div className="mt-10 flex flex-col gap-8 h-full">
+          <div className="mt-6 pb-10 flex flex-col gap-8 h-full">
             {asideLinks.map((link, index) => (
               <div
                 key={index}
                 className={`${
                   location.pathname === link.link ||
                   (location.pathname.includes(link.link) &&
-                    (location.pathname.includes("/doctors") || location.pathname.includes("/patients")))
+                    (location.pathname.includes("/doctors") ||
+                      location.pathname.includes("/patients")))
                     ? "border-l-[6px] border-white"
                     : ""
                 } w-full px-5 `}

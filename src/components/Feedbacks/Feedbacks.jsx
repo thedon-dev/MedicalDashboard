@@ -50,21 +50,21 @@ const FeedbacksManagement = () => {
     fetchFeedback();
   }, []);
 
-  const handleApproval = async (id) => {
+  const handleResolve = async (id) => {
     try {
-      await axios.patch(`${liveUrl}/healthcareapprovals/${id}`, {
-        status: "Approved",
+      await axios.patch(`${liveUrl}/mainfeedbackss/${id}`, {
+        resolved: true,
       });
-      const updatedProviders = providers.map((provider) =>
-        provider.id === id ? { ...provider, status: "Approved" } : provider
+      const updatedFeedback = feedback.map((feed) =>
+        feed.id === id ? { ...feed, resolved: true } : feed
       );
-      setProviders(updatedProviders);
+      setFeedback(updatedFeedback);
       setMessage("Provider approved successfully!");
       setSelectedProvider(null);
     } catch (error) {
       console.error("Error handling approval:", error);
     } finally {
-      window.location.reload();
+      // window.location.reload();
     }
   };
 
@@ -126,17 +126,19 @@ const FeedbacksManagement = () => {
                     <td className="py-2 px-4">{item.type}</td>
                     <td className="py-2 px-4">{item.comment}</td>
                     <td className="py-2 px-4">
-                      {item.resolved && (
-                        <div>
+                      {!item.resolved && (
+                        <div className="flex gap-2 justify-center">
                           <button
-                            onClick={() => setSelectedFeedback(item)}
-                            className="bg-[#3AD1F0] text-white px-4 py-1 rounded mr-2"
+                            onClick={() =>
+                              alert(`Viewing feedback: ${item.id}`)
+                            }
+                            className="bg-blue-500 text-white px-3 py-1 rounded"
                           >
                             View
                           </button>
                           <button
-                            onClick={() => handleResolveFeedback(item.id)}
-                            className="bg-red-500 text-white px-4 py-1 rounded"
+                            onClick={() => handleResolve(item.id)}
+                            className="bg-green-500 text-white px-3 py-1 rounded"
                           >
                             Resolve
                           </button>

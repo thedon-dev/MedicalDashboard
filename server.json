@@ -207,7 +207,7 @@
       "id": "2",
       "name": "MedCare Pharmacy",
       "type": "Pharmacy",
-      "status": "Pending",
+      "status": "Approved",
       "documents": [
         {
           "name": "Pharmacy License",
@@ -231,7 +231,7 @@
       "id": "4",
       "name": "Evergreen Pharmacy",
       "type": "Pharmacy",
-      "status": "Pending",
+      "status": "Rejected",
       "documents": [
         {
           "name": "Laboratory Accreditation",

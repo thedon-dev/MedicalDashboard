@@ -55,9 +55,9 @@ const Dashboard = () => {
     <div className="">
       <div>
         <h1 className="text-2xl font-bold">Welcome</h1>
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-10 mt-10">
+        <div className="flex gap-5 flex-wrap mt-10">
           {dataSet.map((data, index) => (
-            <div key={index} className="shadow-lg rounded p-4 flex gap-3 items-center">
+            <div key={index} className="w-[15rem] shadow-lg rounded p-4 flex gap-3 items-center">
               <div
                 className={`p-2 rounded ${data.color} flex justify-center items-center`}
               >

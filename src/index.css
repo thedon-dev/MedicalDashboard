@@ -1,3 +1,44 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: #fff;
+    padding: 1px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #3AD1F0;
+    border-radius: 15px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Target the specific div with its class or ID */
+.custom-scrollbar {
+    scrollbar-width: thin; /* For Firefox */
+    scrollbar-color: #fff #3AD1F0; /* Thumb and track colors */
+  }
+  
+  /* WebKit-based browsers */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px; /* Scrollbar width */
+    height: 8px; /* Scrollbar height (for horizontal scrollbars) */
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #fff; /* Thumb color */
+    border-radius: 4px; /* Rounded corners */
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: #2cb0cc; /* Track color */
+    border-radius: 4px; /* Optional rounded corners for track */
+  }
+  

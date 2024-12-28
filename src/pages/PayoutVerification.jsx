@@ -120,40 +120,25 @@ const VerificationPage = () => {
       <div className="flex w-full">
         <h1 className="text-2xl font-bold text-start mb-10">Metrics</h1>
       </div>
-      <div className="w-full grid md:grid-cols-2 lg:grid-cols-4 gap-5">
-        <div className="col-span-1 flex gap-3 justify-between shadow-lg text-black rounded-lg p-4">
-          <div className="flex flex-col gap-4">
-            <h1 className="text-xl lg:text-2xl font-semibold">
+      <div className="w-full flex flex-wrap gap-5 text-white">
+        <div className="bg-[#3AD1F0] w-[20rem] flex gap-3 justify-between shadow-lg rounded-lg p-4">
+          <div className="flex gap-4 items-center">
+            <h1 className="text-xl font-semibold text-nowrap">
               Total Requests
             </h1>
             <p className="text-2xl font-bold">{transactions.length}</p>
           </div>
-          <div className="">
-            <div className="bg-pink-500 p-2 rounded-lg">
-              <BsPeople color="pink" size={30} />
-            </div>
-          </div>
         </div>
-        <div className="col-span-1 flex justify-between shadow-lg rounded-lg p-4 text-black">
-          <div className="flex flex-col gap-4">
-            <h1 className="text-xl lg:text-2xl font-semibold">Total Amount</h1>
+        <div className="bg-yellow-400 w-[20rem] flex justify-between shadow-lg rounded-lg p-4">
+          <div className="flex gap-4 items-center">
+            <h1 className="text-xl font-semibold text-nowrap">Total Amount</h1>
             <p className="text-2xl font-bold">NGN{totalAmount}</p>
           </div>
-          <div className="">
-            <div className="bg-red-300 p-2 rounded-lg">
-              <CiMoneyBill color="red" size={30} />
-            </div>
-          </div>
         </div>
-        <div className="col-span-1 flex justify-between shadow-lg rounded-lg p-4 text-back">
-          <div className="flex flex-col gap-4">
-            <h1 className="text-xl lg:text-2xl font-semibold">Approved</h1>
+        <div className="bg-green-500 w-[20rem] flex justify-between shadow-lg rounded-lg p-4 text-back">
+          <div className="flex gap-4 items-center">
+            <h1 className="text-xl font-semibold text-nowrap">Approved</h1>
             <p className="text-2xl font-bold">{approvedNum}</p>
-          </div>
-          <div className="">
-            <div className="bg-green-400 p-2 rounded-lg">
-              <BiCheck color="green" size={30} />
-            </div>
           </div>
         </div>
       </div>

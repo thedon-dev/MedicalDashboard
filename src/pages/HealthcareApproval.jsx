@@ -30,7 +30,7 @@ const HealthcareApproval = () => {
 
     try {
       const response = await axios.get(
-        `${liveUrl}/healthcareapprovals`
+        `${localUrl}/healthcareapprovals`
       );
       const fetchedData = response.data;
       const groupedRequests = fetchedData.reduce((acc, provider) => {
@@ -60,7 +60,7 @@ const HealthcareApproval = () => {
 
   const handleApproval = async (id) => {
     try {
-      await axios.patch(`${liveUrl}/healthcareapprovals/${id}`, {
+      await axios.patch(`${localUrl}/healthcareapprovals/${id}`, {
         status: "Approved",
       });
       const updatedProviders = providers.map((provider) =>
@@ -78,7 +78,7 @@ const HealthcareApproval = () => {
 
   const handleRejection = async (id) => {
     try {
-      await axios.patch(`${liveUrl}/healthcareapprovals/${id}`, {
+      await axios.patch(`${localUrl}/healthcareapprovals/${id}`, {
         status: "Rejected",
       });
       const updatedProviders = providers.map((provider) =>
