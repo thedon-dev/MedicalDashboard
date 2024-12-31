@@ -1,19 +1,34 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import CountUp from "react-countup";
 
+// ProgressBar Component
 const ProgressBar = ({ data }) => {
-  const totalRequests = data.reduce(
-    (sum, channel) => sum + channel.requests,
-    0
-  );
+  const [transformedData, setTransformedData] = useState([]);
+  const [totalRequests, setTotalRequests] = useState(0);
+
+  useEffect(() => {
+    if (data && typeof data === "object") {
+      // Transform object into an array
+      const transformed = Object.keys(data).map((key) => ({
+        name: key.charAt(0).toUpperCase() + key.slice(1), // Capitalize name
+        requests: data[key],
+      }));
+
+      setTransformedData(transformed);
+
+      // Calculate total requests
+      const total = Object.values(data).reduce((sum, count) => sum + count, 0);
+      setTotalRequests(total);
+    }
+  }, [data]);
 
   return (
     <div className="mb-10 w-full">
       <div className="lg:flex w-full gap-10">
-        {data.map((channel, index) => {
-          const percentage = ((channel.requests / totalRequests) * 100).toFixed(
-            1
-          );
+        {transformedData.map((channel, index) => {
+          const percentage = totalRequests
+            ? ((channel.requests / totalRequests) * 100).toFixed(1)
+            : 0;
 
           return (
             <div key={index} className="mb-4 w-full">
@@ -57,57 +72,75 @@ const ProgressBar = ({ data }) => {
   );
 };
 
-// Example usage
-const totalRequest = ({ providers, data, progressBar }) => {
+
+// TotalRequest Component
+const TotalRequest = ({ providers, data, progressBar }) => {
   return (
     <>
       <h1 className="text-lg font-semibold mb-4">Requests Received</h1>
       <div className="grid lg:grid-cols-5 mb-5 gap-5">
+        {/* Total Requests Card */}
         <div className="bg-[#3AD1F0] flex items-center p-3 justify-between col-span-1 rounded-lg text-white">
           <h1 className="text-xl">Total Request</h1>
           <p className="text-2xl font-bold my-auto">
             <CountUp
               start={0}
-              end={providers.length}
+              end={data[0].requests}
               duration={2}
               separator=","
             />
           </p>
         </div>
+
+        {/* Approved Requests Card */}
         <div className="bg-green-500 flex items-center p-3 justify-between col-span-1 rounded-lg text-white">
           <h1 className="text-xl">Approved</h1>
           <p className="text-2xl font-bold my-auto">
             <CountUp
               start={0}
-              end={data["Approved Requests"]}
+              end={data[1].requests}
               duration={2}
               separator=","
             />
           </p>
         </div>
+
+        {/* Pending Requests Card */}
         <div className="bg-yellow-500 flex items-center p-3 justify-between col-span-1 rounded-lg text-white">
           <h1 className="text-xl">Pending</h1>
           <p className="text-2xl font-bold my-auto">
             <CountUp
               start={0}
-              end={data["Pending Requests"]}
+              end={data[2].requests}
               duration={2}
               separator=","
             />
           </p>
         </div>
+
+        {/* Rejected Requests Card */}
         <div className="bg-red-700 flex items-center p-3 justify-between col-span-1 rounded-lg text-white">
           <h1 className="text-xl">Rejected</h1>
           <p className="text-2xl font-bold my-auto">
-            <CountUp
-              start={0}
-              end={data["Rejected Requests"]}
-              duration={2}
-              separator=","
-            />
+            {/* Ensure data is loaded before rendering */}
+            {data && data[3] ? (
+              <CountUp
+                start={0}
+                end={data[3].requests}
+                duration={2}
+                separator=","
+              />
+            ) : (
+              <>
+              <span>...</span>
+              </>
+            )}
           </p>
         </div>
+
       </div>
+
+      {/* ProgressBar Component */}
       <div className="mt-10">
         <ProgressBar data={progressBar} />
       </div>
@@ -115,4 +148,4 @@ const totalRequest = ({ providers, data, progressBar }) => {
   );
 };
 
-export default totalRequest;
+export default TotalRequest;

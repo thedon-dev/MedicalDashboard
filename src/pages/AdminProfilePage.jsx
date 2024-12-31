@@ -14,9 +14,30 @@ const ProfilePage = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = axios.get();
+      try {
+        const response = await fetch('https://backend-code-8vf0.onrender.com/api/admin/patient-stats', {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json"
+          }
+        });
+  
+        console.log("Response: ", response);
+  
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+  
+        const data = await response.json();
+        console.log("Data: ", data);
+      } catch (error) {
+        console.error("Error fetching data: ", error);
+      }
     };
+  
+    fetchData();
   }, []);
+  
   return (
     <div className="">
       <div className="lg:w-[60%] mx-auto mt-20">

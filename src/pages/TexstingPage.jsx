@@ -9,6 +9,7 @@ const AdminProfilePage = ({ selectedUserId }) => {
   const [suspensionReason, setSuspensionReason] = useState("");
 
   useEffect(() => {
+    console.log("Selecteduser id: ", selectedUserId)
     if (selectedUserId) {
       fetchUserDetails(selectedUserId);
     }
@@ -19,7 +20,7 @@ const AdminProfilePage = ({ selectedUserId }) => {
     setError("");
     try {
       const response = await axios.get(
-        `http://localhost:3000/users/${userId}`
+        `https://backend-code-8vf0.onrender.com/users/${userId}`
       );
       setUserDetails(response.data);
     } catch (err) {

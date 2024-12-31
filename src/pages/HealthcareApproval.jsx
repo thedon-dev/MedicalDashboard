@@ -11,6 +11,19 @@ const HealthcareApproval = () => {
   const [selectedProvider, setSelectedProvider] = useState(null);
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [err, setErr] = useState(null)
+  const [allProviders2, setallProviders2] = useState([
+    { name: "Doctors", requests: 0 },
+    { name: "Pharmacy", requests: 0 },
+    { name: "Laboratory", requests: 0 },
+  ])
+  const [allProviders, setallProviders] = useState([
+    { name: "Doctors", requests: 0 },
+    { name: "Pharmacy", requests: 0 },
+    { name: "Laboratory", requests: 0 },
+  ])
+  const [Data, setData] = useState([])
+  const [loading, setLoading] = useState(false)
   const [error, setError] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [providersPerPage] = useState(10);
@@ -28,57 +41,112 @@ const HealthcareApproval = () => {
   const fetchProviders = async () => {
     setIsLoading(true);
     setError("");
-
+  
     try {
       const response = await axios.get(`${url}/api/admin/approveRequest`);
-      console.log(response.data.data)
+      console.log("Response values: ", response.data);
       const fetchedData = response.data?.data;
-      if (!fetchedData) {
+  
+      if (!fetchedData || typeof fetchedData !== "object") {
         throw new Error("Invalid API response structure");
       }
-
+  
+      console.log("Fetched data: ", fetchedData);
+  
+      // Create updatedRequestData using the object fields
       const updatedRequestData = [
         { name: "Total Requests", requests: fetchedData.totalRequests },
         { name: "Approved Requests", requests: fetchedData.approved },
         { name: "Pending Requests", requests: fetchedData.pending },
         { name: "Rejected Requests", requests: fetchedData.rejected },
       ];
-      console.log(updatedRequestData)
-
-      // const groupedRequests = fetchedData.reduce((acc, provider) => {
-      //   const { type } = provider;
-      //   acc[type] = (acc[type] || 0) + 1;
-      //   return acc;
-      // }, {});
-      // const updatedRequestData = Object.keys(groupedRequests).map((key) => ({
-      //   name: key,
-      //   requests: groupedRequests[key],
-      // }));
-
-      const statusCounts = fetchedData.reduce((acc, provider) => {
-        const { status } = provider;
-        acc[status] = (acc[status] || 0) + 1;
-        return acc;
-      }, {});
-
+  
+      console.log("Updated request data: ", updatedRequestData);
+  
+      // Compute statusCounts if `fetchedData` has a property containing an array of providers
+      let statusCounts = {};
+      console.log("fett: ", fetchedData)
+      console.log("TE: ", typeof fetchedData.providers)
+      if (Array.isArray(fetchedData.providers)) {
+        statusCounts = fetchedData.providers.reduce((acc, provider) => {
+          const { status } = provider;
+          acc[status] = (acc[status] || 0) + 1;
+          return acc;
+        }, {});
+      } else {
+        console.log("No providers array found in fetchedData");
+      }
+  
+      console.log("Status Counts:", statusCounts);
+  
+      // Update state with fetched and processed data
       setRequestData(updatedRequestData);
-
+      console.log("Pending: ", fetchedData.pending)
+  
       setStatusCounts({
-        totalRequest: fetchedData.totalRequest,
-        approved: fetchedData.approved,
-        pending: fetchedData.pending,
-        rejected: fetchedData.rejected,
+        totalRequest: fetchedData.totalRequests || 0,
+        approved: fetchedData.approved || 0,
+        pending: fetchedData.pending || 0,
+        rejected: fetchedData.rejected || 0,
       });
-
-      setProviders(fetchedData);
-      setRequestData(updatedRequestData);
-      setStatusCounts(statusCounts);
+  
+      setProviders(fetchedData.providers || []);
     } catch (error) {
+      console.error("Error fetching providers: ", error.message);
       setError(error.message);
     } finally {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    const fetchDataFromApi = async () => {
+      setLoading(true);
+      setError(null); // Reset error state before the request
+
+      try {
+        const response = await fetch("https://backend-code-8vf0.onrender.com/api/admin/approveRequestList");
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const result = await response.json();
+
+        if (!result.success) {
+          throw new Error("Failed to fetch data: success flag is false");
+        }
+
+        console.log("Result.data: ", result.data);
+        setData(result.data);
+
+        // Count the occurrences of 'doctor', 'pharmacy', 'laboratory'
+        const countProviders = result.data.reduce(
+          (acc, provider) => {
+            if (provider.type === "doctor") acc.doctors++;
+            if (provider.type === "pharmacy") acc.pharmacy++;
+            if (provider.type === "laboratory") acc.laboratory++;
+            return acc;
+          },
+          { doctors: 0, pharmacy: 0, laboratory: 0 }
+        );
+
+        // Update the state with the counted values
+        setallProviders(result.data);
+        setallProviders2(countProviders)
+        console.log("Count providers: ", countProviders)
+        console.log("Allproviders: ", allProviders)
+      } catch (error) {
+        console.error("Error during fetch:", error);
+        setError(error.message); // Set the error message to state
+      } finally {
+        setLoading(false); // Ensure loading state is turned off after request is complete
+      }
+    };
+
+    fetchDataFromApi();
+  }, []);
+  
 
   const handleApproval = async (id) => {
     try {
@@ -117,6 +185,7 @@ const HealthcareApproval = () => {
   };
 
   const openProviderDetails = (provider) => {
+    console.log("provider chosen: ", provider)
     setSelectedProvider(provider);
   };
 
@@ -150,9 +219,9 @@ const HealthcareApproval = () => {
       <div className="w-full">
         <div className="">
           <TotalRequest
-            providers={providers}
+            providers={allProviders2}
             data={requestData}
-            progressBar={requestData}
+            progressBar={allProviders2}
           />
         </div>
         <div className="">
@@ -172,11 +241,11 @@ const HealthcareApproval = () => {
 
           {isLoading && <p>Loading...</p>}
 
-          {!isLoading && !error && currentProviders.length === 0 && (
+          {!isLoading && !error && allProviders.length === 0 && (
             <p className="text-gray-500">No providers waiting for approval.</p>
           )}
 
-          {!isLoading && !error && currentProviders.length > 0 && (
+          {!isLoading && !error && allProviders.length > 0 && (
             <div className="w-full">
               <div className="w-full bg-white rounded-lg overflow-hidden shadow-md overflow-x-scroll lg:overflow-x-hidden">
                 <table className="w-full border-collapse">
@@ -189,7 +258,7 @@ const HealthcareApproval = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {currentProviders.map((provider) => (
+                    {allProviders.map((provider) => (
                       <tr
                         key={provider.id}
                         className="border-b text-gray-700 hover:bg-gray-100"
@@ -273,18 +342,19 @@ const HealthcareApproval = () => {
             <div className="mb-4">
               <h3 className="font-semibold text-gray-700">Documents:</h3>
               <ul className="list-disc pl-5">
-                {selectedProvider.documents.map((doc, index) => (
-                  <li key={index} className="mb-1">
-                    <a
-                      href={doc.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-600 hover:underline"
-                    >
-                      {doc.name}
-                    </a>
-                  </li>
-                ))}
+              {Object.entries(selectedProvider.documents).map(([key, url], index) => (
+  <li key={index} className="mb-1">
+    <a
+      href={url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-blue-600 hover:underline"
+    >
+      {key}
+    </a>
+  </li>
+))}
+
               </ul>
             </div>
             {selectedProvider.showRejectionInput ? (
