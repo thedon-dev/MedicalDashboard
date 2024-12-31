@@ -79,7 +79,7 @@ const totalRequest = ({ providers, data, progressBar }) => {
           <p className="text-2xl font-bold my-auto">
             <CountUp
               start={0}
-              end={data["Approved"]}
+              end={data["Approved Requests"]}
               duration={2}
               separator=","
             />
@@ -90,7 +90,7 @@ const totalRequest = ({ providers, data, progressBar }) => {
           <p className="text-2xl font-bold my-auto">
             <CountUp
               start={0}
-              end={data["Pending"]}
+              end={data["Pending Requests"]}
               duration={2}
               separator=","
             />
@@ -101,7 +101,7 @@ const totalRequest = ({ providers, data, progressBar }) => {
           <p className="text-2xl font-bold my-auto">
             <CountUp
               start={0}
-              end={data["Rejected"]}
+              end={data["Rejected Requests"]}
               duration={2}
               separator=","
             />

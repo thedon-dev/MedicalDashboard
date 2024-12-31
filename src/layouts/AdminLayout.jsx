@@ -63,7 +63,7 @@ const AdminLayout = () => {
       <aside
         className={`${
           isNavOpen ? "left-0" : "-left-[100%]"
-        }  bg-[#3AD1F0] shadow-md custom-scrollbar h-screen max-h-screen lg:shadow-none md:w-[10rem] lg:w-[15rem] fixed overflow-y-auto lg:left-0 z-20 top-0 transition-all duration-300`}
+        }  bg-[#3AD1F0] shadow-md custom-scrollbar h-screen max-h-screen lg:shadow-none md:w-[15rem] fixed overflow-y-auto lg:left-0 z-20 top-0 transition-all duration-300`}
       >
         <div className=" flex flex-col">
           <div className="sticky top-0 bg-[#3AD1F0] justify-between lg:justify-center items-center h-[5.5rem] flex px-5">

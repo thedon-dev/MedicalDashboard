@@ -1,20 +1,22 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Bar } from "react-chartjs-2";
+import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
+import { url } from "../../config";
 
 const FeedbacksManagement = () => {
   const [feedback, setFeedback] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedFeedback, setSelectedFeedback] = useState(null);
   const [chartData, setChartData] = useState(null);
-
-  const localUrl = "http://localhost:3000";
-  const liveUrl = "https://meddatabase-1.onrender.com";
+  const [currentPage, setCurrentPage] = useState(1);
+  const [feedbackPerPage] = useState(10);
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     const fetchFeedback = async () => {
       try {
-        const response = await axios.get(`${localUrl}/mainfeedbackss`);
+        const response = await axios.get(`${url}/mainfeedbackss`);
         setFeedback(response.data);
         console.log(feedback);
 
@@ -50,16 +52,32 @@ const FeedbacksManagement = () => {
     fetchFeedback();
   }, []);
 
+  const indexOfLastFeedback = currentPage * feedbackPerPage;
+  const indexOfFirstFeedback = indexOfLastFeedback - feedbackPerPage;
+  const currentFeedbacks = feedback.slice(
+    indexOfFirstFeedback,
+    indexOfLastFeedback
+  );
+
+  const totalPages = Math.ceil(feedback.length / feedbackPerPage);
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
+  };
+  const handleNextPage = () => {
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+  };
+
   const handleResolve = async (id) => {
     try {
-      await axios.patch(`${liveUrl}/mainfeedbackss/${id}`, {
+      await axios.patch(`${url}/mainfeedbackss/${id}`, {
         resolved: true,
       });
       const updatedFeedback = feedback.map((feed) =>
         feed.id === id ? { ...feed, resolved: true } : feed
       );
       setFeedback(updatedFeedback);
-      setMessage("Provider approved successfully!");
+      setMessage("Feedback Resolved!");
       setSelectedProvider(null);
     } catch (error) {
       console.error("Error handling approval:", error);
@@ -70,7 +88,7 @@ const FeedbacksManagement = () => {
 
   const handleResolveFeedback = async (id) => {
     try {
-      await axios.patch(`${localUrl}/healthcareapprovals/${id}`, {
+      await axios.patch(`${url}/healthcareapprovals/${id}`, {
         resolved: true,
       });
       const updatedFeedback = feedback.map((feed) =>
@@ -82,10 +100,8 @@ const FeedbacksManagement = () => {
   };
 
   return (
-    <div className="min-h-screen">
-      <h1 className="text-2xl font-bold text-[#3AD1F0] mb-6">
-        Feedback Management
-      </h1>
+    <div className="">
+      <h1 className="text-2xl font-bold mb-6">Feedback Management</h1>
 
       {loading ? (
         <p>Loading feedback...</p>
@@ -107,7 +123,16 @@ const FeedbacksManagement = () => {
               )}
             </div>
           </div>
-          <div className="rounded-lg overflow-hidden overflow-x-scroll lg:overflow-x-hidden">
+          {message && (
+            <div
+              className={`mb-4 px-4 py-2 rounded text-white ${
+                message.includes("approved") ? "bg-green-500" : "bg-red-500"
+              }`}
+            >
+              {message}
+            </div>
+          )}
+          <div className="border rounded-lg overflow-hidden overflow-x-scroll lg:overflow-x-hidden">
             <table className="text-nowrap w-full bg-white rounded-lg shadow-md">
               <thead className="bg-[#3AD1F0] text-white">
                 <tr>
@@ -119,7 +144,7 @@ const FeedbacksManagement = () => {
                 </tr>
               </thead>
               <tbody>
-                {feedback.map((item) => (
+                {currentFeedbacks.map((item) => (
                   <tr key={item.id} className="text-center border-b">
                     <td className="py-2 px-4">{item.id}</td>
                     <td className="py-2 px-4">{item.user}</td>
@@ -149,6 +174,33 @@ const FeedbacksManagement = () => {
                 ))}
               </tbody>
             </table>
+          </div>
+          <div className="flex gap-4 justify-center items-center mt-5">
+            <button
+              onClick={handlePreviousPage}
+              disabled={currentPage === 1}
+              className={`px-4 py-2 rounded ${
+                currentPage === 1
+                  ? "bg-gray-300 cursor-not-allowed"
+                  : "bg-blue-600 text-white hover:bg-blue-700"
+              }`}
+            >
+              <FaAngleLeft />
+            </button>
+
+            <span className="font-bold text-lg">{currentPage}</span>
+
+            <button
+              onClick={handleNextPage}
+              disabled={currentPage === totalPages}
+              className={`px-4 py-2 rounded ${
+                currentPage === totalPages
+                  ? "bg-gray-300 cursor-not-allowed"
+                  : "bg-blue-600 text-white hover:bg-blue-700"
+              }`}
+            >
+              <FaAngleRight />
+            </button>
           </div>
         </>
       )}

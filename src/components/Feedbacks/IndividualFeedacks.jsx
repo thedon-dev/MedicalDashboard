@@ -35,7 +35,7 @@ const IndividualFeedbacks = () => {
 
   return (
     <div className="">
-      <h1 className="text-2xl font-bold mb-4 text-[#3AD1F0]">
+      <h1 className="text-2xl font-bold mb-4">
         Feedback and Comments
       </h1>
       <div className="flex gap-4 mb-6">

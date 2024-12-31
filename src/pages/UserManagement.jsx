@@ -4,25 +4,58 @@ import axios from "axios";
 import { FaAngleLeft, FaAngleRight, FaRegStar, FaStar } from "react-icons/fa";
 import user from "../assets/patient.png";
 import TotalRequests from "../components/UserManagementComponents/TotalRequest";
+import { url } from "../config";
+import { BiSearch } from "react-icons/bi";
 
 const UserManagement = () => {
-  const [patients, setPatients] = useState([]);
-  const [doctors, setDoctors] = useState([]);
+  const [data, setData] = useState({
+    patients: [],
+    doctors: [],
+    laboratories: [],
+    pharmacies: [],
+  });
+
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [recordsPerPage] = useState(5);
-  const [showData, setShowData] = useState("patients");
+  const [showData, setShowData] = useState("doctors");
+
   const navigate = useNavigate();
-  const liveUrl = "https://meddatabase-1.onrender.com";
-  const localUrl = "http://localhost:3000";
 
   useEffect(() => {
+    const APIurl = {
+      patients: "api/admin/patients",
+      doctors: "api/provider/all-doctors",
+      pharmacies: "api/admin/pharmacies",
+      laboratories: "api/admin/laboratories",
+    }[showData];
+
     const fetchUsers = async () => {
       try {
-        const response = await axios.get(`${liveUrl}/${showData}`);
-        showData == "patients"
-          ? setPatients(response.data)
-          : setDoctors(response.data);
+        const response = await axios.get(`${url}/${APIurl}`);
+        showData === "patients"
+          ? setData((prevState) => ({
+              ...prevState,
+              patients: response.data.patients,
+            }))
+          : showData === "doctors"
+          ? setData((prevState) => ({
+              ...prevState,
+              doctors: response.data.doctors,
+            }))
+          : showData === "laboratories"
+          ? setData((prevState) => ({
+              ...prevState,
+              laboratories: response.data.laboratories,
+            }))
+          : showData === "pharmacies"
+          ? setData((prevState) => ({
+              ...prevState,
+              pharmacies: response.data.pharmacies,
+            }))
+          : null;
+
+        console.log("data: ", data[showData]);
       } catch (error) {
         console.error("Error fetching users:", error);
       } finally {
@@ -49,10 +82,11 @@ const UserManagement = () => {
     }
   };
 
-  const totalPages = Math.ceil(patients.length / recordsPerPage);
+  const totalPages = Math.ceil(data?.[showData]?.length / recordsPerPage);
   const indexOfLastRecord = currentPage * recordsPerPage;
   const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
-  const currentRecords = patients.slice(indexOfFirstRecord, indexOfLastRecord);
+  const currentRecords =
+    data?.[showData]?.slice(indexOfFirstRecord, indexOfLastRecord) || [];
 
   const handlePreviousPage = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
@@ -69,173 +103,148 @@ const UserManagement = () => {
   return (
     <div className="">
       <div className="flex gap-3 mb-10">
-        {[ "doctors", "patients", "pharmarcy", "laboratory", "therapist"].map((data, index) => (
-          <button
-            key={index}
-            className={`px-4 py-3 ${
-              showData == data ? "bg-[#3AD1F0]" : "bg-slate-500"
-            } font-semibold text-white rounded shadow-lg hover:shadow-2xl `}
-            onClick={() => setShowData(data)}
-          >
-            {data}
-          </button>
-        ))}
+        {["doctors", "patients", "pharmarcies", "laboratories", "therapists"].map(
+          (data, index) => (
+            <button
+              key={index}
+              className={`px-4 py-3 ${
+                showData == data ? "bg-[#3AD1F0]" : "bg-slate-500"
+              } font-semibold text-white rounded shadow-lg hover:shadow-2xl `}
+              onClick={() => setShowData(data)}
+            >
+              {data}
+            </button>
+          )
+        )}
       </div>
-      <div className="rounded-lg shadow-lg overflow-hidden">
-        {/* {showData == "Doctors" ? (
-          <table className="min-w-full bg-white rounded-lg">
-            <thead>
-              <tr className="bg-black text-white">
-                <th className="py-3 px-4 text-left">Name</th>
-                <th className="py-3 px-4 text-left">Email</th>
-                <th className="py-3 px-4 text-left">Purpose</th>
-                <th className="py-3 px-4 text-left">Status</th>
-                <th className="py-3 px-4 text-center">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {doctors.map((user) => (
-                <tr
-                  key={user.id}
-                  className="border-b hover:bg-gray-100 cursor-pointer"
-                  onClick={() => handleRowClick(user.id)}
-                >
-                  <td className="py-3 px-4">{user.name}</td>
-                  <td className="py-3 px-4">{user.email}</td>
-                  <td className="py-3 px-4 capitalize">{user.tag}</td>
-                  <td className="py-3 px-4">
-                    {user.suspended ? (
-                      <span className="text-red-500 font-semibold">
-                        Suspended
-                      </span>
-                    ) : (
-                      <span className="text-green-500 font-semibold">
-                        Active
-                      </span>
-                    )}
-                  </td>
-                  <td
-                    className="py-3 px-4 text-center"
-                    onClick={(e) => e.stopPropagation()} // Prevent row click
-                  >
-                    {!user.suspended && (
-                      <button
-                        onClick={() => handleRowClick(user.id)}
-                        className="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600"
-                      >
-                        Show Profile
-                      </button>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        ) : (
-          <table className="min-w-full bg-white rounded-lg">
-            <thead>
-              <tr className="bg-black text-white">
-                <th className="py-3 px-4 text-left">Name</th>
-                <th className="py-3 px-4 text-left">Email</th>
-                <th className="py-3 px-4 text-left">Status</th>
-                <th className="py-3 px-4 text-center">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {patients.map((user) => (
-                <tr
-                  key={user.id}
-                  className="border-b hover:bg-gray-100 cursor-pointer"
-                  onClick={() => handleRowClick(user.id)}
-                >
-                  <td className="py-3 px-4">{user.name}</td>
-                  <td className="py-3 px-4">{user.email}</td>
-                  <td className="py-3 px-4">
-                    {user.treatment ? (
-                      <span className="text-red-500 font-semibold">
-                        In Treatment
-                      </span>
-                    ) : (
-                      <span className="text-gray-500 font-semibold">
-                        Dormant
-                      </span>
-                    )}
-                  </td>
-                  <td
-                    className="py-3 px-4 text-center"
-                    onClick={(e) => e.stopPropagation()} // Prevent row click
-                  >
-                    <button
-                      onClick={() => handleRowClick(user.id)}
-                      className="bg-green-500 text-white py-1 px-3 rounded hover:bg-red-600"
-                    >
-                      Show Profile
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )} */}
+      <div className="my-4 w-full">
+        <div className="flex items-center gap-1 py-1 px-4 border rounded-lg">
+          <BiSearch size={23} />
+          <input
+            type="text"
+            placeholder={`Search ${showData}`}
+            // value={searchTerm}
+            // onChange={(e) => setSearchTerm(e.target.value)}
+            className="p-2 w-full md:w-1/3 capitalize focus:outline-none"
+          />
+        </div>
       </div>
 
       <div>
-        {showData == "patients" && (
+        {showData === "patients" && (
           <div className="grid md:flex flex-wrap gap-5">
-            {currentRecords.map((patient, index) => (
-              <div
-                key={index}
-                className="bg-white min-w-[20rem] flex-shrink h-fit overflow-hidden lg:grid lg:grid-cols-5 rounded-lg shadow"
-              >
+            {currentRecords.length > 0 &&
+              currentRecords.map((patient, index) => (
                 <div
-                  className="overflow-hidden w-full lg:h-full col-span-2"
-                  style={{
-                    backgroundImage: `url(${user})`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                    backgroundRepeat: "no-repeat",
-                  }}
-                ></div>
-                <div className="col-span-3 p-4 flex flex-col gap-1 justify-between w-full">
-                  <h4 className="text-xl font-semibold">{patient.name}</h4>
-                  <span className="">location: {patient.location}</span>
-                  <div className="flex gap-2">
-                    <span>Height: {patient.height}ft</span>
-                    <span>Weight: {patient.weight}kg</span>
+                  key={index}
+                  className="bg-white w-[20rem] flex-shrink h-fit overflow-hidden lg:grid lg:grid-cols-5 rounded-lg shadow"
+                >
+                  <div
+                    className="overflow-hidden w-full lg:h-full col-span-2"
+                    style={{
+                      backgroundImage: `url(${user})`,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                      backgroundRepeat: "no-repeat",
+                    }}
+                  ></div>
+                  <div className="col-span-3 p-4 flex flex-col gap-1 justify-between w-full">
+                    <h4 className="text-xl font-semibold">
+                      {patient.firstName} {patient.lastName}
+                    </h4>
+                    <span className="">
+                      location:{" "}
+                      {patient.address ? patient.address : "no address given"}
+                    </span>
+                    <span>
+                      gender:{" "}
+                      {patient.gender ? patient.gender : "gender not given"}
+                    </span>
+                    <Link
+                      to={`/admin/usermanagement/patients/${patient.id}`}
+                      className="text-white text-center w-full py-2 rounded bg-[#3AD1F0] mt-2 font-semibold"
+                    >
+                      View Profile
+                    </Link>
                   </div>
-                  <Link
-                    to={`/admin/usermanagement/patients/${patient.id}`}
-                    className="text-white text-center w-full py-2 rounded bg-[#3AD1F0] mt-2 font-semibold"
-                  >
-                    View Profile
-                  </Link>
                 </div>
-              </div>
-            ))}
+              ))}
           </div>
         )}
-        {showData == "patients" && (
+        {showData === "doctors" && (
           <div className="flex flex-wrap gap-5">
-            {doctors.map((doctor, index) => (
-              <div
-                key={index}
-                className={`${index > 0 && "mt-5 lg:mt-0"} overflow-hidden bg-white md:w-[20rem] lg:grid grid-cols-5 rounded-lg shadow`}
-              >
+            {currentRecords.length > 0 &&
+              currentRecords.map((doctor, index) => (
                 <div
-                  className="overflow-hidden w-full h-full col-span-2"
-                  style={{
-                    backgroundImage: `url(${user})`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                    backgroundRepeat: "no-repeat",
-                  }}
+                  key={index}
+                  className={` overflow-hidden bg-white md:w-[20rem] lg:grid grid-cols-5 rounded-lg shadow`}
                 >
+                  {/* <div
+                    className="overflow-hidden w-full h-full col-span-2"
+                    style={{
+                      backgroundImage: `url(${doctor.images.profilePhoto})`,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                      backgroundRepeat: "no-repeat",
+                    }}
+                  ></div> */}
+                  <div className="col-span-3 p-4 flex flex-col gap-2 justify-between w-full">
+                    <h4 className="text-xl font-semibold">
+                      Dr. {doctor.fullName}
+                    </h4>
+                    <span className="text-sm">Gender: {doctor.gender}</span>
+                    <div className="">
+                      <p className="text-nowrap">
+                        Active Status:{" "}
+                        <span
+                          className={`${
+                            doctor.isOnline ? "text-green-500" : "text-red-600"
+                          } `}
+                        >
+                          {doctor.isOnline ? "Online" : "Offline"}
+                        </span>{" "}
+                      </p>
+                      <div className="mt-1">
+                        <span className="">
+                          Medical Specialty: {doctor.medicalSpecialty.name}
+                        </span>
+                      </div>
+                    </div>
+                    <Link
+                      to={`/admin/usermanagement/doctors/${doctor._id}`}
+                      className="w-full text-center py-2 rounded text-white bg-[#3AD1F0] mt-2 font-semibold"
+                    >
+                      View Profile
+                    </Link>
+                  </div>
                 </div>
-                <div className="col-span-3 p-4 flex flex-col gap-2 justify-between w-full">
-                  <h4 className="text-xl font-semibold">{doctor.name}</h4>
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <p className="text-nowrap">Average Rating: </p>
-                    <div className="flex items-center gap-0.5">
+              ))}
+          </div>
+        )}
+
+        {showData === "pharmarcy" && currentRecords > 0 && (
+          <div>
+            {currentRecords.length > 0 &&
+              currentRecords.map((doctor, index) => (
+                <div
+                  key={index}
+                  className="bg-white lg:grid grid-cols-5 rounded-lg shadow"
+                >
+                  <div
+                    className="overflow-hidden w-full h-[300px] col-span-2"
+                    style={{
+                      backgroundImage: `url(${user})`,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                      backgroundRepeat: "no-repeat",
+                    }}
+                  >
+                    {/* <img src={user} alt="" className="object-cover"/> */}
+                  </div>
+                  <div className="col-span-3 p-4 flex flex-col gap-2 justify-between w-full">
+                    <h4 className="text-xl font-semibold">{doctor.name}</h4>
+                    {/* <div className="flex items-center gap-2">
+                      <p>Average Rating: </p>
                       {Array.from({ length: 5 }, (_, index) => (
                         <span key={index} className="flex">
                           {index < doctor.details.rating ? (
@@ -245,63 +254,65 @@ const UserManagement = () => {
                           )}
                         </span>
                       ))}
-                    </div>
+                    </div> */}
+
+                    <p className="">{doctor.details.bio}</p>
+                    <Link
+                      to={`/usermanagement/doctors/${doctor.id}`}
+                      className="w-full text-center py-2 rounded text-white bg-[#3AD1F0] mt-2 font-semibold"
+                    >
+                      View Profile
+                    </Link>
                   </div>
-                  <Link
-                    to={`/usermanagement/doctors/${doctor.id}`}
-                    className="w-full text-center py-2 rounded text-white bg-[#3AD1F0] mt-2 font-semibold"
-                  >
-                    View Profile
-                  </Link>
                 </div>
-              </div>
-            ))}
+              ))}
           </div>
         )}
 
-        {showData === "pharmarcy" && currentRecords > 0 && (
+        {showData === "laboratories" && currentRecords > 0 && (
           <div>
-            {doctors.map((doctor, index) => (
-              <div
-                key={index}
-                className="bg-white lg:grid grid-cols-5 rounded-lg shadow"
-              >
+            {currentRecords.length > 0 &&
+              currentRecords.map((laboratory, index) => (
                 <div
-                  className="overflow-hidden w-full h-[300px] col-span-2"
-                  style={{
-                    backgroundImage: `url(${user})`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                    backgroundRepeat: "no-repeat",
-                  }}
+                  key={index}
+                  className="bg-white lg:grid grid-cols-5 rounded-lg shadow"
                 >
-                  {/* <img src={user} alt="" className="object-cover"/> */}
-                </div>
-                <div className="col-span-3 p-4 flex flex-col gap-2 justify-between w-full">
-                  <h4 className="text-xl font-semibold">{doctor.name}</h4>
-                  <div className="flex items-center gap-2">
-                    <p>Average Rating: </p>
-                    {Array.from({ length: 5 }, (_, index) => (
-                      <span key={index} className="flex">
-                        {index < doctor.details.rating ? (
-                          <FaStar className="text-green-500" size={15} />
-                        ) : (
-                          <FaRegStar className="text-gray-400" size={15} />
-                        )}
-                      </span>
-                    ))}
-                  </div>
-
-                  <p className="">{doctor.details.bio}</p>
-                  <Link
-                    to={`/usermanagement/doctors/${doctor.id}`}
-                    className="w-full text-center py-2 rounded text-white bg-[#3AD1F0] mt-2 font-semibold"
+                  <div
+                    className="overflow-hidden w-full h-[300px] col-span-2"
+                    style={{
+                      backgroundImage: `url(${user})`,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                      backgroundRepeat: "no-repeat",
+                    }}
                   >
-                    View Profile
-                  </Link>
+                    {/* <img src={user} alt="" className="object-cover"/> */}
+                  </div>
+                  <div className="col-span-3 p-4 flex flex-col gap-2 justify-between w-full">
+                    <h4 className="text-xl font-semibold">{laboratory.name}</h4>
+                    {/* <div className="flex items-center gap-2">
+                      <p>Average Rating: </p>
+                      {Array.from({ length: 5 }, (_, index) => (
+                        <span key={index} className="flex">
+                          {index < doctor.details.rating ? (
+                            <FaStar className="text-green-500" size={15} />
+                          ) : (
+                            <FaRegStar className="text-gray-400" size={15} />
+                          )}
+                        </span>
+                      ))}
+                    </div> */}
+
+                    <p className="">{laboratory.details.bio}</p>
+                    <Link
+                      to={`/usermanagement/doctors/${laboratory.id}`}
+                      className="w-full text-center py-2 rounded text-white bg-[#3AD1F0] mt-2 font-semibold"
+                    >
+                      View Profile
+                    </Link>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
           </div>
         )}
       </div>

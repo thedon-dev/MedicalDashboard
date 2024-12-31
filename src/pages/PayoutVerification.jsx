@@ -1,8 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { BiCheck } from "react-icons/bi";
-import { BsPeople } from "react-icons/bs";
-import { CiMoneyBill } from "react-icons/ci";
+import { url } from "../config";
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
 
 const VerificationPage = () => {
@@ -16,8 +14,8 @@ const VerificationPage = () => {
   const [approvedNum, setApprovedNum] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [paymentsPerPage] = useState(10);
-  const liveUrl = "https://meddatabase-1.onrender.com"
-  const localUrl = "http://localhost:3000"
+  const liveUrl = "https://meddatabase-1.onrender.com";
+  const localUrl = "http://localhost:3000";
 
   const handleApproveClick = (transaction) => {
     setSelectedTransaction(transaction);
@@ -29,9 +27,7 @@ const VerificationPage = () => {
     setError("");
 
     try {
-      const response = await axios.get(
-        `${liveUrl}/paymentverification`
-      );
+      const response = await axios.get(`${url}/api/admin/approveRequest`);
       setTransactions(response.data);
 
       const total = response.data.reduce((acc, item) => acc + item.amount, 0);
@@ -69,6 +65,30 @@ const VerificationPage = () => {
     fetchTransactions();
   }, []);
 
+  const handleRejectClick = async (transaction, rejectionNote) => {
+    try {
+      const response = await axios.put(
+        `${localUrl}/api/admin/set-approval-status/${transaction.adminId}`,
+        {
+          userId: transaction.userId,
+          isApproved: false,
+          type: transaction.type,
+          rejectionNote: rejectionNote || "No specific reason provided.",
+        }
+      );
+
+      setTransactions((prev) =>
+        prev.map((txn) =>
+          txn.id === transaction.id ? { ...txn, status: "Rejected" } : txn
+        )
+      );
+      setMessage("Transaction rejected successfully!");
+    } catch (error) {
+      console.error("Error rejecting transaction:", error);
+      setMessage("Failed to reject transaction. Please try again.");
+    }
+  };
+
   const handleVerifyOtp = () => {
     if (!otp) {
       setMessage("Please enter an OTP.");
@@ -82,12 +102,9 @@ const VerificationPage = () => {
     })
       .then(() => {
         axios
-          .patch(
-            `${liveUrl}/paymentverification/${selectedTransaction.id}`,
-            {
-              status: "Approved",
-            }
-          )
+          .patch(`${liveUrl}/paymentverification/${selectedTransaction.id}`, {
+            status: "Approved",
+          })
           .then(() => {
             setTransactions((prev) =>
               prev.map((txn) =>
@@ -184,12 +201,25 @@ const VerificationPage = () => {
                     </td>
                     <td className="py-3 px-4 flex justify-center gap-2">
                       {transaction.status === "Pending" && (
-                        <button
-                          onClick={() => handleApproveClick(transaction)}
-                          className="px-4 py-2 text-sm text-white bg-blue-600 rounded hover:bg-blue-700"
-                        >
-                          Approve
-                        </button>
+                        <>
+                          <button
+                            onClick={() => handleApproveClick(transaction)}
+                            className="px-4 py-2 text-sm text-white bg-blue-600 rounded hover:bg-blue-700"
+                          >
+                            Approve
+                          </button>
+                          <button
+                            onClick={() =>
+                              handleRejectClick(
+                                transaction,
+                                "Specify your reason"
+                              )
+                            }
+                            className="px-4 py-2 text-sm text-white bg-red-600 rounded hover:bg-red-700"
+                          >
+                            Reject
+                          </button>
+                        </>
                       )}
                     </td>
                   </tr>

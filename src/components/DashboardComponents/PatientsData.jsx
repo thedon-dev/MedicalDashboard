@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Bar, Doughnut } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -9,6 +9,8 @@ import {
   Legend,
   ArcElement,
 } from "chart.js";
+import { url } from "../../config";
+import axios from "axios";
 
 ChartJS.register(
   BarElement,
@@ -55,22 +57,24 @@ const PatientsData = () => {
         label: `${view} Applications`,
         data: dataSets[view],
         backgroundColor: "#3AD1F0",
-        borderRadius: 20, 
+        borderRadius: 20,
       },
     ],
   };
 
-  const illnessesData = {
-    labels: ["Flu", "Diabetes", "COVID-19", "Hypertension", "Asthma"],
+  const [doughnutLoading, setDoughnutLoading] = useState(true);
+  const [illnessesData, setIllnessesData] = useState({
+    labels: [],
     datasets: [
       {
-        data: [120, 80, 60, 90, 50],
+        data: [],
         backgroundColor: [
           "#FF6384",
           "#36A2EB",
           "#FFCE56",
           "#4CAF50",
           "#FFA726",
+          "#7E57C2",
         ],
         hoverBackgroundColor: [
           "#FF6384",
@@ -78,10 +82,11 @@ const PatientsData = () => {
           "#FFCE56",
           "#4CAF50",
           "#FFA726",
+          "#7E57C2",
         ],
       },
     ],
-  };
+  });
 
   const chartOptions = {
     responsive: true,
@@ -115,11 +120,42 @@ const PatientsData = () => {
     },
   };
 
+  useEffect(() => {
+    const fetchAilmentsData = async () => {
+      try {
+        const response = await axios.get(`${url}/api/admin/top-ailments`);
+        const ailments = response.data?.data;
+        console.log('ailment: ', response.data)
+        if (ailments.length > 0) {
+          const labels = ailments.map((item) => item.diagnosis);
+          const data = ailments.map((item) => item.count);
+          setIllnessesData((prevState) => ({
+            ...prevState,
+            labels,
+            datasets: [
+              {
+                ...prevState.datasets[0],
+                data,
+              },
+            ],
+          }));
+        }
+        
+      } catch (error) {
+        console.error("Error fetching ailments data:", error);
+      } finally {
+        setDoughnutLoading(false);
+      }
+    };
+
+    fetchAilmentsData();
+  }, []);
+
   return (
     <div className="grid lg:grid-cols-5 gap-5">
       <div className="lg:col-span-3">
         <h1 className="text-2xl font-bold mb-4">Patients per day</h1>
-        <div className=" rounded-lg hover:shadow-2xl shadow p-5">
+        <div className=" rounded-lg p-5">
           <div className="flex justify-center gap-4 mb-4">
             {["Monthly", "Weekly", "Daily"].map((type) => (
               <button
@@ -143,8 +179,14 @@ const PatientsData = () => {
       </div>
       <div className="w-full lg:col-span-2">
         <h2 className="text-xl font-bold mb-4 text-start">Top Ailment</h2>
-        <div className="max-w-lg mx-auto w-[95%] rounded-lg hover:shadow-2xl shadow p-5">
-          <Doughnut data={illnessesData} />
+        <div className="max-w-lg mx-auto w-[95%] rounded-lg p-5">
+          {doughnutLoading ? (
+            <p>Loading...</p>
+          ) : illnessesData.labels.length === 0 ? (
+            <p>No data found</p>
+          ) : (
+            <Doughnut data={illnessesData} />
+          )}
         </div>
       </div>
     </div>

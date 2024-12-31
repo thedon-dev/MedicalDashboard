@@ -5,11 +5,11 @@ import IndividualFeedbacks from "../components/Feedbacks/IndividualFeedacks";
 const FeedbackManagement = () => {
   return (
     <div>
-      <div className="border">
+      <div className="">
         <FeedbacksManagement />
       </div>
 
-      <div className="border">
+      <div className="mt-10">
         <IndividualFeedbacks />
       </div>
     </div>

@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
 import TotalRequest from "../components/UserManagementComponents/TotalRequest";
+import { url } from "../config";
 
 const HealthcareApproval = () => {
-  const liveUrl = "https://meddatabase-1.onrender.com"
-  const localUrl = "http://localhost:3000"
+  const liveUrl = "https://meddatabase-1.onrender.com";
+  const localUrl = "http://localhost:3000";
   const [providers, setProviders] = useState([]);
   const [selectedProvider, setSelectedProvider] = useState(null);
   const [message, setMessage] = useState("");
@@ -29,24 +30,45 @@ const HealthcareApproval = () => {
     setError("");
 
     try {
-      const response = await axios.get(
-        `${localUrl}/healthcareapprovals`
-      );
-      const fetchedData = response.data;
-      const groupedRequests = fetchedData.reduce((acc, provider) => {
-        const { type } = provider;
-        acc[type] = (acc[type] || 0) + 1;
-        return acc;
-      }, {});
-      const updatedRequestData = Object.keys(groupedRequests).map((key) => ({
-        name: key,
-        requests: groupedRequests[key],
-      }));
+      const response = await axios.get(`${url}/api/admin/approveRequest`);
+      console.log(response.data.data)
+      const fetchedData = response.data?.data;
+      if (!fetchedData) {
+        throw new Error("Invalid API response structure");
+      }
+
+      const updatedRequestData = [
+        { name: "Total Requests", requests: fetchedData.totalRequests },
+        { name: "Approved Requests", requests: fetchedData.approved },
+        { name: "Pending Requests", requests: fetchedData.pending },
+        { name: "Rejected Requests", requests: fetchedData.rejected },
+      ];
+      console.log(updatedRequestData)
+
+      // const groupedRequests = fetchedData.reduce((acc, provider) => {
+      //   const { type } = provider;
+      //   acc[type] = (acc[type] || 0) + 1;
+      //   return acc;
+      // }, {});
+      // const updatedRequestData = Object.keys(groupedRequests).map((key) => ({
+      //   name: key,
+      //   requests: groupedRequests[key],
+      // }));
+
       const statusCounts = fetchedData.reduce((acc, provider) => {
         const { status } = provider;
         acc[status] = (acc[status] || 0) + 1;
         return acc;
       }, {});
+
+      setRequestData(updatedRequestData);
+
+      setStatusCounts({
+        totalRequest: fetchedData.totalRequest,
+        approved: fetchedData.approved,
+        pending: fetchedData.pending,
+        rejected: fetchedData.rejected,
+      });
 
       setProviders(fetchedData);
       setRequestData(updatedRequestData);
@@ -72,7 +94,7 @@ const HealthcareApproval = () => {
     } catch (error) {
       console.error("Error handling approval:", error);
     } finally {
-      window.location.reload()
+      window.location.reload();
     }
   };
 
@@ -90,7 +112,7 @@ const HealthcareApproval = () => {
     } catch (error) {
       console.error("Error handling rejection:", error);
     } finally {
-      window.location.reload()
+      window.location.reload();
     }
   };
 
@@ -127,7 +149,11 @@ const HealthcareApproval = () => {
     <div className="flex flex-col items-center lg:p-4">
       <div className="w-full">
         <div className="">
-          <TotalRequest providers={providers} data={statusCounts} progressBar={requestData}/>
+          <TotalRequest
+            providers={providers}
+            data={requestData}
+            progressBar={requestData}
+          />
         </div>
         <div className="">
           <h1 className="text-2xl font-bold w-full text-start mb-10">

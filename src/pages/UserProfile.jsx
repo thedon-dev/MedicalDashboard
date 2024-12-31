@@ -5,6 +5,7 @@ import img from "../assets/patient.png";
 import { BsDot } from "react-icons/bs";
 import WalletManagement from "../components/UserProfile/WalletManagement";
 import { FaX } from "react-icons/fa6";
+import { url } from "../config";
 
 const UserProfile = () => {
   const { id } = useParams();
@@ -34,7 +35,7 @@ const UserProfile = () => {
     const fetchUser = async () => {
       if (!userType || !id) return;
       try {
-        const response = await axios.get(`${liveUrl}/${userType}/${id}`);
+        const response = await axios.get(`${url}/${id}`);
         setUser(response.data);
       } catch (error) {
         console.error("Error fetching user:", error);
