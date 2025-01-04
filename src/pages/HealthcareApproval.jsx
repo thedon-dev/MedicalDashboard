@@ -11,19 +11,19 @@ const HealthcareApproval = () => {
   const [selectedProvider, setSelectedProvider] = useState(null);
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [err, setErr] = useState(null)
+  const [err, setErr] = useState(null);
   const [allProviders2, setallProviders2] = useState([
     { name: "Doctors", requests: 0 },
     { name: "Pharmacy", requests: 0 },
     { name: "Laboratory", requests: 0 },
-  ])
+  ]);
   const [allProviders, setallProviders] = useState([
     { name: "Doctors", requests: 0 },
     { name: "Pharmacy", requests: 0 },
     { name: "Laboratory", requests: 0 },
-  ])
-  const [Data, setData] = useState([])
-  const [loading, setLoading] = useState(false)
+  ]);
+  const [Data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [providersPerPage] = useState(10);
@@ -41,18 +41,18 @@ const HealthcareApproval = () => {
   const fetchProviders = async () => {
     setIsLoading(true);
     setError("");
-  
+
     try {
       const response = await axios.get(`${url}/api/admin/approveRequest`);
       console.log("Response values: ", response.data);
       const fetchedData = response.data?.data;
-  
+
       if (!fetchedData || typeof fetchedData !== "object") {
         throw new Error("Invalid API response structure");
       }
-  
+
       console.log("Fetched data: ", fetchedData);
-  
+
       // Create updatedRequestData using the object fields
       const updatedRequestData = [
         { name: "Total Requests", requests: fetchedData.totalRequests },
@@ -60,13 +60,13 @@ const HealthcareApproval = () => {
         { name: "Pending Requests", requests: fetchedData.pending },
         { name: "Rejected Requests", requests: fetchedData.rejected },
       ];
-  
+
       console.log("Updated request data: ", updatedRequestData);
-  
+
       // Compute statusCounts if `fetchedData` has a property containing an array of providers
       let statusCounts = {};
-      console.log("fett: ", fetchedData)
-      console.log("TE: ", typeof fetchedData.providers)
+      console.log("fett: ", fetchedData);
+      console.log("TE: ", typeof fetchedData.providers);
       if (Array.isArray(fetchedData.providers)) {
         statusCounts = fetchedData.providers.reduce((acc, provider) => {
           const { status } = provider;
@@ -76,20 +76,20 @@ const HealthcareApproval = () => {
       } else {
         console.log("No providers array found in fetchedData");
       }
-  
+
       console.log("Status Counts:", statusCounts);
-  
+
       // Update state with fetched and processed data
       setRequestData(updatedRequestData);
-      console.log("Pending: ", fetchedData.pending)
-  
+      console.log("Pending: ", fetchedData.pending);
+
       setStatusCounts({
         totalRequest: fetchedData.totalRequests || 0,
         approved: fetchedData.approved || 0,
         pending: fetchedData.pending || 0,
         rejected: fetchedData.rejected || 0,
       });
-  
+
       setProviders(fetchedData.providers || []);
     } catch (error) {
       console.error("Error fetching providers: ", error.message);
@@ -105,7 +105,9 @@ const HealthcareApproval = () => {
       setError(null); // Reset error state before the request
 
       try {
-        const response = await fetch("https://backend-code-8vf0.onrender.com/api/admin/approveRequestList");
+        const response = await fetch(
+          "https://backend-code-8vf0.onrender.com/api/admin/approveRequestList"
+        );
 
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -133,9 +135,9 @@ const HealthcareApproval = () => {
 
         // Update the state with the counted values
         setallProviders(result.data);
-        setallProviders2(countProviders)
-        console.log("Count providers: ", countProviders)
-        console.log("Allproviders: ", allProviders)
+        setallProviders2(countProviders);
+        console.log("Count providers: ", countProviders);
+        console.log("Allproviders: ", allProviders);
       } catch (error) {
         console.error("Error during fetch:", error);
         setError(error.message); // Set the error message to state
@@ -146,7 +148,6 @@ const HealthcareApproval = () => {
 
     fetchDataFromApi();
   }, []);
-  
 
   const handleApproval = async (id) => {
     try {
@@ -185,7 +186,7 @@ const HealthcareApproval = () => {
   };
 
   const openProviderDetails = (provider) => {
-    console.log("provider chosen: ", provider)
+    console.log("provider chosen: ", provider);
     setSelectedProvider(provider);
   };
 
@@ -342,19 +343,20 @@ const HealthcareApproval = () => {
             <div className="mb-4">
               <h3 className="font-semibold text-gray-700">Documents:</h3>
               <ul className="list-disc pl-5">
-              {Object.entries(selectedProvider.documents).map(([key, url], index) => (
-  <li key={index} className="mb-1">
-    <a
-      href={url}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="text-blue-600 hover:underline"
-    >
-      {key}
-    </a>
-  </li>
-))}
-
+                {Object.entries(selectedProvider.documents).map(
+                  ([key, url], index) => (
+                    <li key={index} className="mb-1">
+                      <a
+                        href={url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:underline"
+                      >
+                        {key}
+                      </a>
+                    </li>
+                  )
+                )}
               </ul>
             </div>
             {selectedProvider.showRejectionInput ? (

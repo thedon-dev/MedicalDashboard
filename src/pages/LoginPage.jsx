@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
@@ -45,14 +46,17 @@ const LoginPage = () => {
     setErrors({});
 
     try {
-      const response = await fakeLogin(formData.email, formData.password);
+      const response = await axios.post("http://localhost:3000/api/auth/login", {
+        email: formData.email,
+        password: formData.password,
+      });
 
-      if (response.success) {
-        localStorage.setItem("authToken", response.token);
+      if (response.data.success) {
+        localStorage.setItem("authToken", response.data.token);
         alert("Login successful!");
         navigate("/admin/dashboard");
       } else {
-        setErrors({ general: "Invalid email or password." });
+        setErrors({ general: response.data.message || "Invalid email or password." });
       }
     } catch (err) {
       console.error("Login error:", err);
@@ -60,18 +64,6 @@ const LoginPage = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const fakeLogin = (email, password) => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        if (email === "admin@example.com" && password === "password123") {
-          resolve({ success: true, token: "mock-auth-token-123456" });
-        } else {
-          resolve({ success: false });
-        }
-      }, 1000);
-    });
   };
 
   return (
