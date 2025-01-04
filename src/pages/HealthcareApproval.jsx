@@ -197,12 +197,12 @@ const HealthcareApproval = () => {
   // Pagination Logic
   const indexOfLastProvider = currentPage * providersPerPage;
   const indexOfFirstProvider = indexOfLastProvider - providersPerPage;
-  const currentProviders = providers.slice(
+  const currentProviders = allProviders.slice(
     indexOfFirstProvider,
     indexOfLastProvider
   );
 
-  const totalPages = Math.ceil(providers.length / providersPerPage);
+  const totalPages = Math.ceil(allProviders.length / providersPerPage);
 
   const handlePreviousPage = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
@@ -258,7 +258,7 @@ const HealthcareApproval = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {allProviders.map((provider) => (
+                    {currentProviders.map((provider) => (
                       <tr
                         key={provider.id}
                         className="border-b text-gray-700 hover:bg-gray-100"

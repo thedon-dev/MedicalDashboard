@@ -35,8 +35,9 @@ const UserProfile = () => {
     const fetchUser = async () => {
       if (!userType || !id) return;
       try {
-        const response = await axios.get(`${url}/${id}`);
+        const response = await axios.get(`${url}/api/user/profile/${id}`);
         setUser(response.data);
+        console.log(response.data)
       } catch (error) {
         console.error("Error fetching user:", error);
       } finally {
@@ -94,20 +95,22 @@ const UserProfile = () => {
       <div className="mt-5 rounded-t-lg bg-blue-400 h-[20vh]"></div>
       <div className="bg-gray-100 rounded-b-lg pb-10">
         <div className="px-[5%] lg:px-[10%] flex flex-col lg:flex-row flex-wrap">
-          <div className="relative flex gap-5 lg:gap-8 h-fit py-5">
+          <div className="relative flex gap-5 lg:gap-8 h-fit pb-5 pt-3">
             <div className="-top-20 absolute w-[150px] h-[150px] lg:w-[200px] lg:h-[200px] rounded-full overflow-hidden">
-              <img src={img} alt="" />
+              <img src={user.userProfile.profilePhoto} alt="" />
             </div>
             <div className="ms-[170px] lg:ms-[250px]">
-              <h1 className="text-xl lg:text-2xl font-semibold">{user.name}</h1>
-              <span
+            <span className="font-semibold text-sm">{user.userProfile.role}</span>
+              <h1 className="text-3xl lg:text-2xl font-semibold">{user.userProfile.firstName} {user.userProfile.lastName}</h1>
+              <span className="text-lg">{user.userProfile.gender}</span>
+              {/* <span
                 className={`${
                   user.suspended ? "text-red-600" : "text-green-500"
                 } flex items-center text-sm lg:text-base`}
               >
                 <BsDot size={25} className="" />{" "}
                 {user.suspended ? "Suspended" : "Active"}
-              </span>
+              </span> */}
             </div>
           </div>
 
@@ -141,7 +144,7 @@ const UserProfile = () => {
               Bio
             </div>
             <div className="mt-5">
-              <p className="text-black text-base">{user.details.bio}</p>
+              <p className="text-black text-base">{user.userProfile.about}</p>
             </div>
           </div>
         </div>

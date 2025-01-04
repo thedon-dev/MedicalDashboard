@@ -33,27 +33,35 @@ const UserManagement = () => {
     const fetchUsers = async () => {
       try {
         const response = await axios.get(`${url}/${APIurl}`);
-        showData === "patients"
-          ? setData((prevState) => ({
+
+        switch (showData) {
+          case "patients":
+            setData((prevState) => ({
               ...prevState,
               patients: response.data.patients,
-            }))
-          : showData === "doctors"
-          ? setData((prevState) => ({
+            }));
+            break;
+          case "doctors":
+            setData((prevState) => ({
               ...prevState,
               doctors: response.data.doctors,
-            }))
-          : showData === "laboratories"
-          ? setData((prevState) => ({
+            }));
+            break;
+          case "laboratories":
+            setData((prevState) => ({
               ...prevState,
-              laboratories: response.data.laboratories,
-            }))
-          : showData === "pharmacies"
-          ? setData((prevState) => ({
+              laboratories: response.data,
+            }));
+            break;
+          case "pharmacies":
+            setData((prevState) => ({
               ...prevState,
-              pharmacies: response.data.pharmacies,
-            }))
-          : null;
+              pharmacies: response.data,
+            }));
+            break;
+          default:
+            console.warn("Invalid value for showData:", showData);
+        }
 
         console.log("data: ", data[showData]);
       } catch (error) {
@@ -64,23 +72,6 @@ const UserManagement = () => {
     };
     fetchUsers();
   }, [showData]);
-
-  const handleSuspend = async (userId) => {
-    try {
-      await axios.patch(`${liveUrl}/users/${userId}`, {
-        suspended: true,
-      });
-      setUsers((prevUsers) =>
-        prevUsers.map((user) =>
-          user.id === userId ? { ...user, suspended: true } : user
-        )
-      );
-
-      alert("User account suspended successfully!");
-    } catch (error) {
-      console.error("Error suspending user:", error);
-    }
-  };
 
   const totalPages = Math.ceil(data?.[showData]?.length / recordsPerPage);
   const indexOfLastRecord = currentPage * recordsPerPage;
@@ -103,19 +94,23 @@ const UserManagement = () => {
   return (
     <div className="">
       <div className="flex gap-3 mb-10">
-        {["doctors", "patients", "pharmarcies", "laboratories", "therapists"].map(
-          (data, index) => (
-            <button
-              key={index}
-              className={`px-4 py-3 ${
-                showData == data ? "bg-[#3AD1F0]" : "bg-slate-500"
-              } font-semibold text-white rounded shadow-lg hover:shadow-2xl `}
-              onClick={() => setShowData(data)}
-            >
-              {data}
-            </button>
-          )
-        )}
+        {[
+          "doctors",
+          "patients",
+          "pharmacies",
+          "laboratories",
+          "therapists",
+        ].map((data, index) => (
+          <button
+            key={index}
+            className={`px-4 py-3 ${
+              showData == data ? "bg-[#3AD1F0]" : "bg-slate-500"
+            } font-semibold text-white rounded shadow-lg hover:shadow-2xl `}
+            onClick={() => setShowData(data)}
+          >
+            {data}
+          </button>
+        ))}
       </div>
       <div className="my-4 w-full">
         <div className="flex items-center gap-1 py-1 px-4 border rounded-lg">
@@ -222,16 +217,16 @@ const UserManagement = () => {
           </div>
         )}
 
-        {showData === "pharmarcy" && currentRecords > 0 && (
-          <div>
+        {showData === "pharmacies" &&  (
+          <div className="grid grid-cols-2 gap-5">
             {currentRecords.length > 0 &&
-              currentRecords.map((doctor, index) => (
+              currentRecords.map((pharmacy, index) => (
                 <div
                   key={index}
-                  className="bg-white lg:grid grid-cols-5 rounded-lg shadow"
+                  className="bg-white lg:grid grid-cols-5 rounded-lg h-fit shadow"
                 >
-                  <div
-                    className="overflow-hidden w-full h-[300px] col-span-2"
+                  {/* <div
+                    className="overflow-hidden w-full h-full col-span-2"
                     style={{
                       backgroundImage: `url(${user})`,
                       backgroundSize: "cover",
@@ -239,26 +234,26 @@ const UserManagement = () => {
                       backgroundRepeat: "no-repeat",
                     }}
                   >
-                    {/* <img src={user} alt="" className="object-cover"/> */}
-                  </div>
+                    <img src={user} alt="" className="object-cover"/>
+                  </div> */}
                   <div className="col-span-3 p-4 flex flex-col gap-2 justify-between w-full">
-                    <h4 className="text-xl font-semibold">{doctor.name}</h4>
-                    {/* <div className="flex items-center gap-2">
-                      <p>Average Rating: </p>
-                      {Array.from({ length: 5 }, (_, index) => (
-                        <span key={index} className="flex">
-                          {index < doctor.details.rating ? (
-                            <FaStar className="text-green-500" size={15} />
-                          ) : (
-                            <FaRegStar className="text-gray-400" size={15} />
-                          )}
-                        </span>
-                      ))}
-                    </div> */}
+                    <h4 className="text-xl font-semibold">{pharmacy.name}</h4>
 
-                    <p className="">{doctor.details.bio}</p>
+                    <p className="">{pharmacy.address}</p>
+
+                    <p
+                      className={`text-sm font-semibold mb-2 ${
+                        pharmacy.kycVerification
+                          ? "text-green-500"
+                          : "text-red-500"
+                      }`}
+                    >
+                      {pharmacy.kycVerification
+                        ? "KYC Verified"
+                        : "KYC Not Verified"}
+                    </p>
                     <Link
-                      to={`/usermanagement/doctors/${doctor.id}`}
+                      to={`/usermanagement/doctors/${pharmacy.id}`}
                       className="w-full text-center py-2 rounded text-white bg-[#3AD1F0] mt-2 font-semibold"
                     >
                       View Profile
@@ -269,7 +264,54 @@ const UserManagement = () => {
           </div>
         )}
 
-        {showData === "laboratories" && currentRecords > 0 && (
+        {showData === "laboratories" &&  (
+          <div className="flex flex-wrap gap-5">
+            {currentRecords.length > 0 &&
+              currentRecords.map((lab, index) => (
+                <div
+                  key={index}
+                  className={` overflow-hidden bg-white md:w-[20rem] lg:grid grid-cols-5 rounded-lg shadow`}
+                >
+                  {/* <div
+                  className="overflow-hidden w-full h-full col-span-2"
+                  style={{
+                    backgroundImage: `url(${doctor.images.profilePhoto})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    backgroundRepeat: "no-repeat",
+                  }}
+                ></div> */}
+                  <div className="col-span-3 p-4 flex flex-col gap-2 justify-between w-full">
+                    <h4 className="text-xl font-semibold">{lab.name}</h4>
+                    {/* <span className="text-sm">Address: {lab.address}</span> */}
+                    <div className="">
+                      <p className="text-nowrap">
+                        Active Status:{" "}
+                        <span
+                          className={`${
+                            lab.isOnline ? "text-green-500" : "text-red-600"
+                          } `}
+                        >
+                          {lab.isOnline ? "Online" : "Offline"}
+                        </span>{" "}
+                      </p>
+                      <div className="mt-1">
+                        <span className="text-sm">Address: {lab.address}</span>
+                      </div>
+                    </div>
+                    <Link
+                      to={`/admin/usermanagement/doctors/${lab._id}`}
+                      className="w-full text-center py-2 rounded text-white bg-[#3AD1F0] mt-2 font-semibold"
+                    >
+                      View Profile
+                    </Link>
+                  </div>
+                </div>
+              ))}
+          </div>
+        )}
+
+        {showData === "therapist" && currentRecords > 0 && (
           <div>
             {currentRecords.length > 0 &&
               currentRecords.map((laboratory, index) => (
