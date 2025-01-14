@@ -8,6 +8,7 @@ import { MdFreeCancellation } from "react-icons/md";
 import { CgCalendar } from "react-icons/cg";
 import { url } from "../config";
 import axios from "axios";
+import TopRatedDoctorsTable from "../components/DashboardComponents/TopRatedDoctors";
 
 const Dashboard = () => {
   const [dataSet, setDataSet] = useState([
@@ -99,6 +100,9 @@ const Dashboard = () => {
         </div>
         <div className="mt-10">
           <PatientsData />
+        </div>
+        <div>
+          <TopRatedDoctorsTable />
         </div>
       </div>
     </div>

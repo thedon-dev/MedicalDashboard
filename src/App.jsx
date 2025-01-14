@@ -13,6 +13,8 @@ import Dashboard from "./pages/Dashboard";
 import ProfilePage from "./pages/AdminProfilePage";
 import UserProfile from "./pages/UserProfile";
 import AdminProfilePage from "./pages/TexstingPage";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 function App() {
   return (
@@ -20,6 +22,8 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<LoginPage />} />
+          <Route path="/forgotpassword" element={<ForgotPassword />} />
+          <Route path="/resetpassword" element={<ResetPassword />} />
           <Route path="/admin" element={<AdminLayout />}>
             <Route
               path="/admin/usermanagement/patients/:id"

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BsMenuButton, BsPeople } from "react-icons/bs";
 import { FaAngleDown, FaBars, FaMoneyBill, FaSignOutAlt } from "react-icons/fa";
 import {
@@ -57,6 +57,16 @@ const AdminLayout = () => {
     localStorage.removeItem("authToken");
     navigate("/");
   };
+
+  const [profilePhoto, setProfilePhoto] = useState("");
+
+  useEffect(() => {
+    const storedUserData = localStorage.getItem("userData");
+    if (storedUserData) {
+      const user = JSON.parse(storedUserData);
+      setProfilePhoto(user.profilePhoto);
+    }
+  }, []);
 
   return (
     <div className="">
@@ -134,7 +144,15 @@ const AdminLayout = () => {
                 <div className="text-start">
                   <p className="font-semibold text-xl">Admin</p>
                 </div>
-                <img className="h-10 w-auto rounded-full" src={img} alt="" />
+                {profilePhoto ? (
+                  <img
+                    src={profilePhoto}
+                    alt="Profile"
+                    className="h-10 w-auto rounded-full"
+                  />
+                ) : (
+                  <p>Loading...</p>
+                )}
                 <div className="rounded-full">
                   <FaAngleDown size={25} />
                 </div>

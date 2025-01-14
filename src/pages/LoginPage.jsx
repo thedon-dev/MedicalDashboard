@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { url } from "../config";
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
@@ -20,7 +21,6 @@ const LoginPage = () => {
 
   const validateForm = () => {
     const newErrors = {};
-
     if (!formData.email) {
       newErrors.email = "Email is required.";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
@@ -29,9 +29,10 @@ const LoginPage = () => {
 
     if (!formData.password) {
       newErrors.password = "Password is required.";
-    } else if (formData.password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters.";
     }
+    // else if (formData.password.length < 6) {
+    //   newErrors.password = "Password must be at least 6 characters.";
+    // }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -46,21 +47,28 @@ const LoginPage = () => {
     setErrors({});
 
     try {
-      const response = await axios.post("http://localhost:3000/api/auth/login", {
+      const response = await axios.post(`${url}/api/auth/login`, {
         email: formData.email,
         password: formData.password,
       });
 
-      if (response.data.success) {
-        localStorage.setItem("authToken", response.data.token);
+      if (response.data.message === "Successfully logged in") {
+        localStorage.setItem("authToken", response.data.user.id);
+        localStorage.setItem("userData", JSON.stringify(response.data.user));
+
         alert("Login successful!");
         navigate("/admin/dashboard");
       } else {
-        setErrors({ general: response.data.message || "Invalid email or password." });
+        setErrors({
+          general: response.data.message || "Invalid email or password.",
+        });
       }
     } catch (err) {
       console.error("Login error:", err);
-      setErrors({ general: "Something went wrong. Please try again." });
+      setErrors({
+        general:
+          err.response?.data?.message || "An error occurred during login.",
+      });
     } finally {
       setLoading(false);
     }
@@ -132,6 +140,11 @@ const LoginPage = () => {
             >
               {loading ? "Signing In..." : "Sign In"}
             </button>
+            <div className="mt-2 flex justify-end">
+              <Link className="text-sm text-blue-500" to="/forgotpassword">
+                Forgot Password?
+              </Link>
+            </div>
           </form>
         </div>
       </div>

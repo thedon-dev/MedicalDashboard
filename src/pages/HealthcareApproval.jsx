@@ -37,6 +37,7 @@ const HealthcareApproval = () => {
     name,
     requests,
   }));
+  const [adminId, setAdminId] = useState("");
 
   const fetchProviders = async () => {
     setIsLoading(true);
@@ -100,9 +101,16 @@ const HealthcareApproval = () => {
   };
 
   useEffect(() => {
+    const storedUserData = localStorage.getItem("userData");
+    if (storedUserData) {
+      const adminId = JSON.parse(storedUserData);
+      setAdminId(adminId.id);
+    }
+
+
     const fetchDataFromApi = async () => {
       setLoading(true);
-      setError(null); // Reset error state before the request
+      setError(null);
 
       try {
         const response = await fetch(
@@ -149,21 +157,34 @@ const HealthcareApproval = () => {
     fetchDataFromApi();
   }, []);
 
-  const handleApproval = async (id) => {
+  const showUserId = () => {
+    console.log(adminId)
+  }
+  showUserId()
+
+  const handleApproval = async (provider) => {
     try {
-      await axios.patch(`${localUrl}/healthcareapprovals/${id}`, {
-        status: "Approved",
-      });
-      const updatedProviders = providers.map((provider) =>
-        provider.id === id ? { ...provider, status: "Approved" } : provider
+      const payload = {
+        userId: provider.id,
+        isApproved: true,
+        type: provider.type,
+        rejectionNote: null,
+      };
+
+      const response = await axios.put(
+        `${url}/api/admin/set-approval-status/${adminId}`,
+        payload
+      );
+      const updatedProviders = providers.map((p) =>
+        p.id === provider.id ? { ...p, status: "Approved" } : p
       );
       setProviders(updatedProviders);
+
       setMessage("Provider approved successfully!");
       setSelectedProvider(null);
     } catch (error) {
-      console.error("Error handling approval:", error);
-    } finally {
-      window.location.reload();
+      console.error("Error approving provider:", error.message);
+      setMessage("Failed to approve provider.");
     }
   };
 
@@ -266,6 +287,7 @@ const HealthcareApproval = () => {
                       >
                         <td className="py-3 px-4">{provider.name}</td>
                         <td className="py-3 px-4">{provider.type}</td>
+
                         <td
                           className={`py-3 px-4 text-center font-medium ${
                             provider.status == "Approved" ||

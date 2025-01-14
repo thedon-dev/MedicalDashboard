@@ -1,11 +1,13 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { url } from "../config";
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
+import { url } from "../config";
 
 const VerificationPage = () => {
   const [transactions, setTransactions] = useState([]);
   const [selectedTransaction, setSelectedTransaction] = useState(null);
+  const [accountNumber, setAccountNumber] = useState("");
+  const [bankCode, setBankCode] = useState("");
   const [otp, setOtp] = useState("");
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -15,24 +17,33 @@ const VerificationPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [paymentsPerPage] = useState(10);
   const liveUrl = "https://meddatabase-1.onrender.com";
-  const localUrl = "http://localhost:3000";
+  const apiUrl = `${liveUrl}/api/admin/pendingWithdrawals`;
+  const [adminId, setAdminId] = useState(null);
 
   const handleApproveClick = (transaction) => {
     setSelectedTransaction(transaction);
+    setAccountNumber(""); // Reset account number input
+    setBankCode(""); // Reset bank code input
     setMessage("");
   };
 
-  const fetchTransactions = async () => {
+  const fetchTransactions = async (id) => {
     setIsLoading(true);
     setError("");
 
     try {
-      const response = await axios.get(`${url}/api/admin/approveRequest`);
-      setTransactions(response.data);
+      const response = await axios.get(
+        `${url}/api/auth/pending-withdrawals/${id}`
+      );
+      const fetchedTransactions = response.data.pendingWithdrawals;
 
-      const total = response.data.reduce((acc, item) => acc + item.amount, 0);
-      const approved = response.data.filter(
-        (transaction) => transaction.status === "Approved"
+      setTransactions(fetchedTransactions);
+      const total = fetchedTransactions.reduce(
+        (acc, item) => acc + item.amount,
+        0
+      );
+      const approved = fetchedTransactions.filter(
+        (transaction) => transaction.status === "approved"
       );
       setApprovedNum(approved.length);
       setTotalAmount(total);
@@ -55,81 +66,50 @@ const VerificationPage = () => {
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
   };
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-  };
-
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   useEffect(() => {
-    fetchTransactions();
+    const storedUserData = localStorage.getItem("userData");
+    if (storedUserData) {
+      const user = JSON.parse(storedUserData);
+      setAdminId(user.id);
+    }
   }, []);
 
-  const handleRejectClick = async (transaction, rejectionNote) => {
-    try {
-      const response = await axios.put(
-        `${localUrl}/api/admin/set-approval-status/${transaction.adminId}`,
-        {
-          userId: transaction.userId,
-          isApproved: false,
-          type: transaction.type,
-          rejectionNote: rejectionNote || "No specific reason provided.",
-        }
-      );
-
-      setTransactions((prev) =>
-        prev.map((txn) =>
-          txn.id === transaction.id ? { ...txn, status: "Rejected" } : txn
-        )
-      );
-      setMessage("Transaction rejected successfully!");
-    } catch (error) {
-      console.error("Error rejecting transaction:", error);
-      setMessage("Failed to reject transaction. Please try again.");
+  useEffect(() => {
+    if (adminId) {
+      fetchTransactions(adminId);
     }
-  };
+  }, [adminId]);
 
-  const handleVerifyOtp = () => {
+  const handleCheckOTPVerification = async (transaction) => {
     if (!otp) {
-      setMessage("Please enter an OTP.");
+      setMessage("Please enter the OTP.");
       return;
     }
 
-    new Promise((resolve, reject) => {
-      setTimeout(() => {
-        otp === "123456" ? resolve() : reject(new Error("Invalid OTP"));
-      }, 1000);
-    })
-      .then(() => {
-        axios
-          .patch(`${liveUrl}/paymentverification/${selectedTransaction.id}`, {
-            status: "Approved",
-          })
-          .then(() => {
-            setTransactions((prev) =>
-              prev.map((txn) =>
-                txn.id === selectedTransaction.id
-                  ? { ...txn, status: "Approved" }
-                  : txn
-              )
-            );
-            window.location.reload();
-            setMessage("Transaction approved successfully!");
-            setSelectedTransaction(null);
-          })
-          .catch((error) => {
-            console.error("Error updating transaction:", error);
-            setMessage(
-              "Failed to approve transaction. Please try again later."
-            );
-          });
-      })
-      .catch(() => {
-        setMessage("Invalid OTP. Please try again.");
-      })
-      .finally(() => {
-        setOtp("");
+    try {
+      const response = await axios.post(`${liveUrl}/api/verify-otp`, {
+        TransactionId: transaction._id,
+        Otp: otp,
       });
+
+      if (response.status === 200 && response.data.success) {
+        setTransactions((prev) =>
+          prev.map((txn) =>
+            txn._id === selectedTransaction._id
+              ? { ...txn, status: "approved" }
+              : txn
+          )
+        );
+        setMessage("Transaction approved successfully!");
+        setSelectedTransaction(null);
+      } else {
+        setMessage("OTP verification failed. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error verifying OTP:", error);
+      setMessage("OTP verification failed. Please try again.");
+    }
   };
 
   return (
@@ -159,7 +139,7 @@ const VerificationPage = () => {
           </div>
         </div>
       </div>
-      <h1 className="text-start w-full text-2xl font-bold my-10">Requests</h1>
+      <h1 className="text-start w-full text-2xl font-bold my-10"> Requests</h1>
 
       {isLoading && <p className="text-blue-500">Loading transactions...</p>}
       {error && <p className="text-red-500">{error}</p>}
@@ -180,19 +160,21 @@ const VerificationPage = () => {
               <tbody>
                 {currentLogs.map((transaction) => (
                   <tr
-                    key={transaction.id}
+                    key={transaction._id}
                     className="border-b text-gray-700 hover:bg-gray-100"
                   >
-                    <td className="py-3 px-4">{transaction.user}</td>
+                    <td className="py-3 px-4">
+                      {transaction.user.firstName} {transaction.user.lastName}
+                    </td>
                     <td className="py-3 px-4">{transaction.type}</td>
                     <td className="py-3 px-4 text-right">
                       {transaction.amount}
                     </td>
                     <td
                       className={`py-3 px-4 text-center font-medium ${
-                        transaction.status === "Approved"
+                        transaction.status === "approved"
                           ? "text-green-500"
-                          : transaction.status === "Rejected"
+                          : transaction.status === "rejected"
                           ? "text-red-500"
                           : "text-yellow-500"
                       }`}
@@ -200,19 +182,20 @@ const VerificationPage = () => {
                       {transaction.status}
                     </td>
                     <td className="py-3 px-4 flex justify-center gap-2">
-                      {transaction.status === "Pending" && (
+                      {transaction.status === "pending" && (
                         <>
                           <button
-                            onClick={() => handleApproveClick(transaction)}
+                            onClick={() =>
+                              handleApproveClick(transaction)
+                            }
                             className="px-4 py-2 text-sm text-white bg-blue-600 rounded hover:bg-blue-700"
                           >
                             Approve
                           </button>
                           <button
                             onClick={() =>
-                              handleRejectClick(
-                                transaction,
-                                "Specify your reason"
+                              console.log(
+                                `Reject transaction: ${transaction._id}`
                               )
                             }
                             className="px-4 py-2 text-sm text-white bg-red-600 rounded hover:bg-red-700"
@@ -227,6 +210,65 @@ const VerificationPage = () => {
               </tbody>
             </table>
           </div>
+          {selectedTransaction && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+              <div className="bg-white p-6 rounded-lg shadow-lg w-[90%] max-w-md">
+                <h2 className="text-xl font-bold mb-4">Approve Transaction</h2>
+                <p className="mb-2">
+                  Transaction ID: {selectedTransaction._id}
+                </p>
+
+                {!otpSent ? (
+                  <>
+                    <input
+                      type="text"
+                      placeholder="Account Number"
+                      value={accountNumber}
+                      onChange={(e) => setAccountNumber(e.target.value)}
+                      className="w-full mb-4 p-2 border rounded"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Bank Code"
+                      value={bankCode}
+                      onChange={(e) => setBankCode(e.target.value)}
+                      className="w-full mb-4 p-2 border rounded"
+                    />
+                    <button
+                      onClick={handleSendApprovalClick}
+                      className="px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700"
+                    >
+                      Send OTP
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <input
+                      type="text"
+                      placeholder="Enter OTP"
+                      value={otp}
+                      onChange={(e) => setOtp(e.target.value)}
+                      className="w-full mb-4 p-2 border rounded"
+                    />
+                    <button
+                      onClick={handleCheckOTPVerification}
+                      className="px-4 py-2 text-white bg-green-500 rounded hover:bg-green-600"
+                    >
+                      Verify OTP
+                    </button>
+                  </>
+                )}
+
+                <button
+                  onClick={() => setSelectedTransaction(null)}
+                  className="px-4 py-2 text-white bg-gray-500 rounded hover:bg-gray-600 mt-4"
+                >
+                  Cancel
+                </button>
+                {message && <p className="mt-4 text-blue-600">{message}</p>}
+              </div>
+            </div>
+          )}
           <div className="flex gap-4 justify-center items-center mt-10">
             <button
               onClick={handlePreviousPage}
@@ -253,49 +295,6 @@ const VerificationPage = () => {
             >
               <FaAngleRight />
             </button>
-          </div>
-        </div>
-      )}
-
-      {/* OTP Verification Modal */}
-      {selectedTransaction && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex flex-col justify-center items-center">
-          {message && (
-            <div
-              className={`mb-4 px-4 py-2 rounded text-white ${
-                message.includes("approved") ? "bg-green-500" : "bg-red-500"
-              }`}
-            >
-              {message}
-            </div>
-          )}
-          <div className="bg-white w-full max-w-sm rounded-lg shadow-lg p-6">
-            <h2 className="text-xl font-bold mb-4">Verify OTP</h2>
-            <p className="text-gray-700 mb-4">
-              Enter the OTP sent to your registered contact to approve the
-              transaction for <strong>{selectedTransaction.provider}</strong>.
-            </p>
-            <input
-              type="text"
-              value={otp}
-              onChange={(e) => setOtp(e.target.value)}
-              placeholder="Enter OTP"
-              className="w-full mb-4 px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <div className="flex justify-end gap-4">
-              <button
-                onClick={handleVerifyOtp}
-                className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-              >
-                Verify
-              </button>
-              <button
-                onClick={() => setSelectedTransaction(null)}
-                className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700"
-              >
-                Cancel
-              </button>
-            </div>
           </div>
         </div>
       )}

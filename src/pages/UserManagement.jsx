@@ -127,15 +127,16 @@ const UserManagement = () => {
 
       <div>
         {showData === "patients" && (
-          <div className="grid md:flex flex-wrap gap-5">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
             {currentRecords.length > 0 &&
               currentRecords.map((patient, index) => (
                 <div
                   key={index}
-                  className="bg-white w-[20rem] flex-shrink h-fit overflow-hidden lg:grid lg:grid-cols-5 rounded-lg shadow"
+                  className="bg-white w-full flex flex-col lg:flex-row rounded-lg shadow overflow-hidden"
                 >
+                  {/* Image Section */}
                   <div
-                    className="overflow-hidden w-full lg:h-full col-span-2"
+                    className="w-full lg:w-1/3 h-40 lg:h-auto flex-shrink-0"
                     style={{
                       backgroundImage: `url(${user})`,
                       backgroundSize: "cover",
@@ -143,21 +144,27 @@ const UserManagement = () => {
                       backgroundRepeat: "no-repeat",
                     }}
                   ></div>
-                  <div className="col-span-3 p-4 flex flex-col gap-1 justify-between w-full">
-                    <h4 className="text-xl font-semibold">
+
+                  {/* Details Section */}
+                  <div className="p-4 flex flex-col gap-2 justify-between w-full">
+                    <h4 className="text-xl font-semibold text-gray-800">
                       {patient.firstName} {patient.lastName}
                     </h4>
-                    <span className="">
-                      location:{" "}
-                      {patient.address ? patient.address : "no address given"}
+                    <span className="text-sm text-gray-600">
+                      Location:{" "}
+                      <span className="font-medium">
+                        {patient.address ? patient.address : "No address given"}
+                      </span>
                     </span>
-                    <span>
-                      gender:{" "}
-                      {patient.gender ? patient.gender : "gender not given"}
+                    <span className="text-sm text-gray-600">
+                      Gender:{" "}
+                      <span className="font-medium">
+                        {patient.gender ? patient.gender : "Gender not given"}
+                      </span>
                     </span>
                     <Link
                       to={`/admin/usermanagement/patients/${patient.id}`}
-                      className="text-white text-center w-full py-2 rounded bg-[#3AD1F0] mt-2 font-semibold"
+                      className="text-white text-center py-2 rounded bg-[#3AD1F0] mt-4 font-semibold hover:bg-[#33bce5] transition"
                     >
                       View Profile
                     </Link>
@@ -217,7 +224,7 @@ const UserManagement = () => {
           </div>
         )}
 
-        {showData === "pharmacies" &&  (
+        {showData === "pharmacies" && (
           <div className="grid grid-cols-2 gap-5">
             {currentRecords.length > 0 &&
               currentRecords.map((pharmacy, index) => (
@@ -225,17 +232,6 @@ const UserManagement = () => {
                   key={index}
                   className="bg-white lg:grid grid-cols-5 rounded-lg h-fit shadow"
                 >
-                  {/* <div
-                    className="overflow-hidden w-full h-full col-span-2"
-                    style={{
-                      backgroundImage: `url(${user})`,
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                      backgroundRepeat: "no-repeat",
-                    }}
-                  >
-                    <img src={user} alt="" className="object-cover"/>
-                  </div> */}
                   <div className="col-span-3 p-4 flex flex-col gap-2 justify-between w-full">
                     <h4 className="text-xl font-semibold">{pharmacy.name}</h4>
 
@@ -253,7 +249,7 @@ const UserManagement = () => {
                         : "KYC Not Verified"}
                     </p>
                     <Link
-                      to={`/usermanagement/doctors/${pharmacy.id}`}
+                      to={`/usermanagement/pharmacies/${pharmacy._id}`}
                       className="w-full text-center py-2 rounded text-white bg-[#3AD1F0] mt-2 font-semibold"
                     >
                       View Profile
@@ -264,7 +260,7 @@ const UserManagement = () => {
           </div>
         )}
 
-        {showData === "laboratories" &&  (
+        {showData === "laboratories" && (
           <div className="flex flex-wrap gap-5">
             {currentRecords.length > 0 &&
               currentRecords.map((lab, index) => (

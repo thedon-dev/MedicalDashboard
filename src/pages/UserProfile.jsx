@@ -28,6 +28,10 @@ const UserProfile = () => {
       setUserType("patients");
     } else if (location.pathname.includes("doctor")) {
       setUserType("doctors");
+    } else if (location.pathname.includes("pharmacy")) {
+      setUserType("pharmacy");
+    } else if (location.pathname.includes("laboratory")) {
+      setUserType("laboratory");
     }
   }, [location.pathname]);
 
@@ -51,7 +55,7 @@ const UserProfile = () => {
   const fetchDocuments = async (id) => {
     try {
       const response = await axios.get(
-        `${liveUrl}/documents/${id}`
+        `${url}/documents/${id}`
       );
       setDocuments(response.data.documentsSubmitted);
     } catch (error) {
@@ -103,14 +107,6 @@ const UserProfile = () => {
             <span className="font-semibold text-sm">{user.userProfile.role}</span>
               <h1 className="text-3xl lg:text-2xl font-semibold">{user.userProfile.firstName} {user.userProfile.lastName}</h1>
               <span className="text-lg">{user.userProfile.gender}</span>
-              {/* <span
-                className={`${
-                  user.suspended ? "text-red-600" : "text-green-500"
-                } flex items-center text-sm lg:text-base`}
-              >
-                <BsDot size={25} className="" />{" "}
-                {user.suspended ? "Suspended" : "Active"}
-              </span> */}
             </div>
           </div>
 
