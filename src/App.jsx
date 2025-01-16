@@ -41,6 +41,22 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/admin/usermanagement/pharmacies/:id"
+              element={
+                <ProtectedRoute>
+                  <UserProfile />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/usermanagement/laboratories/:id"
+              element={
+                <ProtectedRoute>
+                  <UserProfile />
+                </ProtectedRoute>
+              }
+            />
             <Route path="/admin/testing" element={<AdminProfilePage />} />
             <Route
               path="/admin/dashboard"

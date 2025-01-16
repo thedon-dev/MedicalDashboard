@@ -1,96 +1,180 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import ActionStatsWithChart from "../components/ActivityStats";
+import {
+  Chart as ChartJS,
+  BarElement,
+  CategoryScale,
+  LinearScale,
+} from "chart.js";
+import { Bar } from "react-chartjs-2";
+import { url } from "../config";
 
-const AuditLogs = () => {
-  const [logs, setLogs] = useState([]);
-  const [loading, setLoading] = useState(true);
+ChartJS.register(BarElement, CategoryScale, LinearScale);
+
+const TransactionLogs = () => {
+  const [email, setEmail] = useState("");
+  const [transactionLogs, setTransactionLogs] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [chartData, setChartData] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const logsPerPage = 10;
-  const liveUrl = "https://meddatabase-1.onrender.com"
-  const localUrl = "http://localhost:3000"
+  const [adminId, setAdminId] = useState(null);
+  const transactionsPerPage = 20;
 
   useEffect(() => {
-    const fetchLogs = async () => {
-      try {
-        const response = await axios.get(`${liveUrl}/auditLogs`);
-        setLogs(response.data);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching audit logs:", error);
-      }
-    };
-
-    fetchLogs();
+    const storedUserData = localStorage.getItem("userData");
+    if (storedUserData) {
+      const user = JSON.parse(storedUserData);
+      setAdminId(user.id);
+    }
   }, []);
 
-  const indexOfLastLog = currentPage * logsPerPage;
-  const indexOfFirstLog = indexOfLastLog - logsPerPage;
-  const currentLogs = logs.slice(indexOfFirstLog, indexOfLastLog);
+  const handleSearch = async () => {
+    if (!email.trim()) return;
+    setLoading(true);
+    try {
+      const response = await axios.post(
+        `${url}/api/admin/${adminId}/user-transactions`,
+        { email }
+      );
+      const transactions = response.data.transactions;
+      const inflow = transactions
+        .filter((tx) => tx.type === "wallet funding")
+        .reduce((acc, tx) => acc + tx.amount, 0);
+      const outflow = transactions
+        .filter((tx) => tx.type !== "wallet funding")
+        .reduce((acc, tx) => acc + tx.amount, 0);
 
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+      setChartData({
+        labels: ["Inflow", "Outflow"],
+        datasets: [
+          {
+            label: "Transaction Summary",
+            data: [inflow, outflow],
+            backgroundColor: ["#4CAF50", "#F44336"],
+          },
+        ],
+      });
 
-  if (loading) {
-    return <p>Loading audit logs...</p>;
-  }
+      setTransactionLogs(transactions);
+      setCurrentPage(1); // Reset to the first page
+    } catch (error) {
+      console.error("Error fetching transaction logs:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Pagination logic
+  const indexOfLastTransaction = currentPage * transactionsPerPage;
+  const indexOfFirstTransaction = indexOfLastTransaction - transactionsPerPage;
+  const currentTransactions = transactionLogs.slice(
+    indexOfFirstTransaction,
+    indexOfLastTransaction
+  );
+
+  const totalPages = Math.ceil(transactionLogs.length / transactionsPerPage);
 
   return (
-    <div className="">
-      <ActionStatsWithChart />
-      <h1 className="text-2xl font-bold mb-5">Audit Logs</h1>
-      <div className="rounded-lg overflow-hidden overflow-x-scroll lg:overflow-x-hidden">
-        <table className="bg-[#3AD1F0] w-full border-collapse border border-gray-300">
-          <thead>
-            <tr className="text-white">
-              <th className="border border-gray-300 px-4 py-2">ID</th>
-              <th className="border border-gray-300 px-4 py-2">Admin</th>
-              <th className="border border-gray-300 px-4 py-2">Action</th>
-              <th className="border border-gray-300 px-4 py-2">Entity</th>
-              <th className="border border-gray-300 px-4 py-2">Timestamp</th>
-            </tr>
-          </thead>
-          <tbody className="bg-white">
-            {currentLogs.map((log) => (
-              <tr key={log.id}>
-                <td className="border border-gray-300 px-4 py-2">{log.id}</td>
-                <td className="border border-gray-300 px-4 py-2">
-                  {log.admin}
-                </td>
-                <td className="border border-gray-300 px-4 py-2">
-                  {log.action}
-                </td>
-                <td className="border border-gray-300 px-4 py-2">
-                  {log.entity}
-                </td>
-                <td className="border border-gray-300 px-4 py-2">
-                  {new Date(log.timestamp).toLocaleString()}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+    <div className="min-h-screen">
+      <h1 className="text-2xl font-bold mb-5">Transaction Logs</h1>
+
+      {/* Search Bar */}
+      <div className="mb-5">
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Enter user email"
+          className="border border-gray-300 rounded p-2 w-fit lg:w-full max-w-md"
+        />
+        <button
+          onClick={handleSearch}
+          className="bg-[#3AD1F0] text-white px-4 py-2 rounded ml-2"
+          disabled={loading}
+        >
+          {loading ? "Searching..." : "Search"}
+        </button>
       </div>
 
-      <div className="flex justify-center mt-4">
-        {Array.from(
-          { length: Math.ceil(logs.length / logsPerPage) },
-          (_, index) => (
-            <button
-              key={index}
-              onClick={() => paginate(index + 1)}
-              className={`mx-1 px-3 py-1 border ${
-                currentPage === index + 1
-                  ? "bg-blue-500 text-white"
-                  : "bg-gray-200 text-gray-700"
-              }`}
-            >
-              {index + 1}
-            </button>
-          )
+      <div className="lg:w-1/2">
+        {chartData && (
+          <div className="mb-5">
+            <h3 className="font-semibold mb-2">Transaction Summary</h3>
+            <Bar data={chartData} />
+          </div>
         )}
       </div>
+
+      {/* Transaction Logs */}
+      {transactionLogs.length > 0 && (
+        <div>
+          <div className="bg-white shadow rounded-lg lg:overflow-hidden overflow-x-scroll">
+            <table className="w-full text-left border-collapse">
+              <thead className="bg-[#3AD1F0]">
+                <tr className="text-white">
+                  <th className="p-3 border">Date</th>
+                  <th className="p-3 border">Type</th>
+                  <th className="p-3 border">Amount</th>
+                  <th className="p-3 border">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {currentTransactions.length > 0 ? (
+                  currentTransactions.map((transaction) => (
+                    <tr key={transaction._id} className="hover:bg-gray-100">
+                      <td className="p-3 border">
+                        {new Date(transaction.date).toLocaleDateString()}
+                      </td>
+                      <td className="p-3 border">{transaction.type}</td>
+                      <td className="p-3 border">
+                        ₦{transaction.amount.toLocaleString()}
+                      </td>
+                      <td className="p-3 border">{transaction.status}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="4" className="text-center p-3">
+                      No transactions found.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Pagination */}
+          <div className="mt-5 flex justify-between items-center">
+            <button
+              className={`px-4 py-2 rounded bg-[#3AD1F0] text-white ${
+                currentPage === 1 && "opacity-50 cursor-not-allowed"
+              }`}
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+            >
+              Previous
+            </button>
+
+            <span className="text-gray-700">
+              Page {currentPage} of {totalPages}
+            </span>
+
+            <button
+              className={`px-4 py-2 rounded bg-[#3AD1F0] text-white ${
+                currentPage === totalPages && "opacity-50 cursor-not-allowed"
+              }`}
+              onClick={() =>
+                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+              }
+              disabled={currentPage === totalPages}
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
-export default AuditLogs;
+export default TransactionLogs;

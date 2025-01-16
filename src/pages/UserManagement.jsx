@@ -23,6 +23,8 @@ const UserManagement = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+
     const APIurl = {
       patients: "api/admin/patients",
       doctors: "api/provider/all-doctors",
@@ -128,117 +130,126 @@ const UserManagement = () => {
       <div>
         {showData === "patients" && (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-            {currentRecords.length > 0 &&
+            {currentRecords.length > 0 ? (
               currentRecords.map((patient, index) => (
                 <div
                   key={index}
-                  className="bg-white w-full flex flex-col lg:flex-row rounded-lg shadow overflow-hidden"
+                  className="bg-white w-full rounded-lg shadow-md border p-4 flex flex-col justify-between hover:shadow-lg transition-shadow"
                 >
-                  {/* Image Section */}
-                  <div
-                    className="w-full lg:w-1/3 h-40 lg:h-auto flex-shrink-0"
-                    style={{
-                      backgroundImage: `url(${user})`,
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                      backgroundRepeat: "no-repeat",
-                    }}
-                  ></div>
-
-                  {/* Details Section */}
-                  <div className="p-4 flex flex-col gap-2 justify-between w-full">
-                    <h4 className="text-xl font-semibold text-gray-800">
+                  {/* Patient Details */}
+                  <div className="flex flex-col gap-2">
+                    <h4 className="text-lg font-semibold text-gray-800 truncate">
                       {patient.firstName} {patient.lastName}
                     </h4>
-                    <span className="text-sm text-gray-600">
-                      Location:{" "}
-                      <span className="font-medium">
-                        {patient.address ? patient.address : "No address given"}
-                      </span>
-                    </span>
-                    <span className="text-sm text-gray-600">
-                      Gender:{" "}
-                      <span className="font-medium">
-                        {patient.gender ? patient.gender : "Gender not given"}
-                      </span>
-                    </span>
+                    <p className="text-sm text-gray-600">
+                      <span className="font-medium">Location:</span>{" "}
+                      {patient.address
+                        ? patient.address
+                        : "No address provided"}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      <span className="font-medium">Gender:</span>{" "}
+                      {patient.gender ? patient.gender : "Not specified"}
+                    </p>
+                  </div>
+
+                  {/* Profile Link */}
+                  <div className="mt-4">
                     <Link
                       to={`/admin/usermanagement/patients/${patient.id}`}
-                      className="text-white text-center py-2 rounded bg-[#3AD1F0] mt-4 font-semibold hover:bg-[#33bce5] transition"
+                      className="block text-center py-2 rounded bg-[#3AD1F0] text-white font-semibold hover:bg-[#33bce5] transition"
                     >
                       View Profile
                     </Link>
                   </div>
                 </div>
-              ))}
+              ))
+            ) : (
+              <p className="text-gray-500 text-center col-span-full">
+                No patients found.
+              </p>
+            )}
           </div>
         )}
+
         {showData === "doctors" && (
-          <div className="flex flex-wrap gap-5">
-            {currentRecords.length > 0 &&
+          <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+            {currentRecords.length > 0 ? (
               currentRecords.map((doctor, index) => (
                 <div
                   key={index}
-                  className={` overflow-hidden bg-white md:w-[20rem] lg:grid grid-cols-5 rounded-lg shadow`}
+                  className="bg-white rounded-lg shadow-md border p-4 flex flex-col justify-between hover:shadow-lg transition-shadow"
                 >
-                  {/* <div
-                    className="overflow-hidden w-full h-full col-span-2"
-                    style={{
-                      backgroundImage: `url(${doctor.images.profilePhoto})`,
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                      backgroundRepeat: "no-repeat",
-                    }}
-                  ></div> */}
-                  <div className="col-span-3 p-4 flex flex-col gap-2 justify-between w-full">
-                    <h4 className="text-xl font-semibold">
+                  {/* Doctor Details */}
+                  <div className="flex flex-col gap-3">
+                    <h4 className="text-lg font-semibold text-gray-800 truncate">
                       Dr. {doctor.fullName}
                     </h4>
-                    <span className="text-sm">Gender: {doctor.gender}</span>
-                    <div className="">
-                      <p className="text-nowrap">
-                        Active Status:{" "}
-                        <span
-                          className={`${
-                            doctor.isOnline ? "text-green-500" : "text-red-600"
-                          } `}
-                        >
-                          {doctor.isOnline ? "Online" : "Offline"}
-                        </span>{" "}
-                      </p>
-                      <div className="mt-1">
-                        <span className="">
-                          Medical Specialty: {doctor.medicalSpecialty.name}
-                        </span>
-                      </div>
-                    </div>
+
+                    <p className="text-sm text-gray-600">
+                      <span className="font-medium">Gender:</span>{" "}
+                      {doctor.gender}
+                    </p>
+
+                    <p className="text-sm text-gray-600">
+                      <span className="font-medium">Active Status:</span>{" "}
+                      <span
+                        className={`font-semibold ${
+                          doctor.isOnline ? "text-green-500" : "text-red-600"
+                        }`}
+                      >
+                        {doctor.isOnline ? "Online" : "Offline"}
+                      </span>
+                    </p>
+
+                    <p className="text-sm text-gray-600">
+                      <span className="font-medium">Medical Specialty:</span>{" "}
+                      {doctor.medicalSpecialty.name}
+                    </p>
+                  </div>
+
+                  {/* Profile Link */}
+                  <div className="mt-4">
                     <Link
                       to={`/admin/usermanagement/doctors/${doctor._id}`}
-                      className="w-full text-center py-2 rounded text-white bg-[#3AD1F0] mt-2 font-semibold"
+                      className="block text-center py-2 rounded bg-[#3AD1F0] text-white font-semibold hover:bg-[#33bce5] transition"
                     >
                       View Profile
                     </Link>
                   </div>
                 </div>
-              ))}
+              ))
+            ) : (
+              <p className="text-gray-500 text-center col-span-full">
+                No doctors found.
+              </p>
+            )}
           </div>
         )}
 
         {showData === "pharmacies" && (
-          <div className="grid grid-cols-2 gap-5">
-            {currentRecords.length > 0 &&
+          <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+            {currentRecords.length > 0 ? (
               currentRecords.map((pharmacy, index) => (
                 <div
                   key={index}
-                  className="bg-white lg:grid grid-cols-5 rounded-lg h-fit shadow"
+                  className="bg-white rounded-lg shadow-md border p-4 flex flex-col justify-between hover:shadow-lg transition-shadow"
                 >
-                  <div className="col-span-3 p-4 flex flex-col gap-2 justify-between w-full">
-                    <h4 className="text-xl font-semibold">{pharmacy.name}</h4>
+                  {/* Pharmacy Details */}
+                  <div className="flex flex-col gap-3">
+                    <h4 className="text-lg font-semibold text-gray-800 truncate">
+                      {pharmacy.name}
+                    </h4>
 
-                    <p className="">{pharmacy.address}</p>
+                    <p className="text-sm text-gray-600">
+                      <span className="font-medium">Address:</span>{" "}
+                      {pharmacy.address
+                        ? pharmacy.address
+                        : "No address provided"}
+                    </p>
 
                     <p
-                      className={`text-sm font-semibold mb-2 ${
+                      className={`text-sm font-semibold ${
                         pharmacy.kycVerification
                           ? "text-green-500"
                           : "text-red-500"
@@ -248,15 +259,24 @@ const UserManagement = () => {
                         ? "KYC Verified"
                         : "KYC Not Verified"}
                     </p>
+                  </div>
+
+                  {/* Profile Link */}
+                  <div className="mt-4">
                     <Link
-                      to={`/usermanagement/pharmacies/${pharmacy._id}`}
-                      className="w-full text-center py-2 rounded text-white bg-[#3AD1F0] mt-2 font-semibold"
+                      to={`/admin/usermanagement/pharmacies/${pharmacy._id}`}
+                      className="block text-center py-2 rounded bg-[#3AD1F0] text-white font-semibold hover:bg-[#33bce5] transition"
                     >
                       View Profile
                     </Link>
                   </div>
                 </div>
-              ))}
+              ))
+            ) : (
+              <p className="text-gray-500 text-center col-span-full">
+                No pharmacies found.
+              </p>
+            )}
           </div>
         )}
 

@@ -45,7 +45,6 @@ const HealthcareApproval = () => {
 
     try {
       const response = await axios.get(`${url}/api/admin/approveRequest`);
-      console.log("Response values: ", response.data);
       const fetchedData = response.data?.data;
 
       if (!fetchedData || typeof fetchedData !== "object") {
@@ -63,11 +62,7 @@ const HealthcareApproval = () => {
       ];
 
       console.log("Updated request data: ", updatedRequestData);
-
-      // Compute statusCounts if `fetchedData` has a property containing an array of providers
-      let statusCounts = {};
-      console.log("fett: ", fetchedData);
-      console.log("TE: ", typeof fetchedData.providers);
+      let statusCounts = {}
       if (Array.isArray(fetchedData.providers)) {
         statusCounts = fetchedData.providers.reduce((acc, provider) => {
           const { status } = provider;
@@ -78,11 +73,7 @@ const HealthcareApproval = () => {
         console.log("No providers array found in fetchedData");
       }
 
-      console.log("Status Counts:", statusCounts);
-
-      // Update state with fetched and processed data
       setRequestData(updatedRequestData);
-      console.log("Pending: ", fetchedData.pending);
 
       setStatusCounts({
         totalRequest: fetchedData.totalRequests || 0,
@@ -127,7 +118,6 @@ const HealthcareApproval = () => {
           throw new Error("Failed to fetch data: success flag is false");
         }
 
-        console.log("Result.data: ", result.data);
         setData(result.data);
 
         // Count the occurrences of 'doctor', 'pharmacy', 'laboratory'
@@ -140,27 +130,18 @@ const HealthcareApproval = () => {
           },
           { doctors: 0, pharmacy: 0, laboratory: 0 }
         );
-
-        // Update the state with the counted values
         setallProviders(result.data);
         setallProviders2(countProviders);
-        console.log("Count providers: ", countProviders);
-        console.log("Allproviders: ", allProviders);
       } catch (error) {
         console.error("Error during fetch:", error);
-        setError(error.message); // Set the error message to state
+        setError(error.message); 
       } finally {
-        setLoading(false); // Ensure loading state is turned off after request is complete
+        setLoading(false); 
       }
     };
 
     fetchDataFromApi();
   }, []);
-
-  const showUserId = () => {
-    console.log(adminId)
-  }
-  showUserId()
 
   const handleApproval = async (provider) => {
     try {
@@ -175,6 +156,7 @@ const HealthcareApproval = () => {
         `${url}/api/admin/set-approval-status/${adminId}`,
         payload
       );
+      console.log("Response:", response.data);
       const updatedProviders = providers.map((p) =>
         p.id === provider.id ? { ...p, status: "Approved" } : p
       );
@@ -216,7 +198,6 @@ const HealthcareApproval = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  // Pagination Logic
   const indexOfLastProvider = currentPage * providersPerPage;
   const indexOfFirstProvider = indexOfLastProvider - providersPerPage;
   const currentProviders = allProviders.slice(

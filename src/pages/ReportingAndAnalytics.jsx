@@ -21,6 +21,8 @@ export const ReportingAndAnalytics = () => {
   const [currentFilter, setCurrentFilter] = useState(userTransactions);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+
     setLoading(true);
 
     const fetchData = async () => {
@@ -78,18 +80,6 @@ export const ReportingAndAnalytics = () => {
 
   return (
     <div>
-      <div>
-        <h3 className="text-xl font-bold">User Activity And Account Status</h3>
-        {!loading ? (
-          <div className="mt-5">
-            <UserActivityAndStatus userData={usersStatus} />
-          </div>
-        ) : (
-          <div className="bg-slate-50 rounded-lg mt-5 grid place-content-center py-20">
-            <p className="text-lg font-semibold">loading...</p>
-          </div>
-        )}
-      </div>
       <div className="lg:grid lg:grid-cols-2 gap-8">
         <div className="mt-10">
           <h3 className="text-xl font-bold">Financial Chart</h3>

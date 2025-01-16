@@ -19,6 +19,7 @@ const VerificationPage = () => {
   const liveUrl = "https://meddatabase-1.onrender.com";
   const apiUrl = `${liveUrl}/api/admin/pendingWithdrawals`;
   const [adminId, setAdminId] = useState(null);
+  const [otpSent, setOtpSent] = useState(false);
 
   const handleApproveClick = (transaction) => {
     setSelectedTransaction(transaction);
@@ -81,16 +82,46 @@ const VerificationPage = () => {
     }
   }, [adminId]);
 
-  const handleCheckOTPVerification = async (transaction) => {
+  const handleSendApprovalClick = async () => {
+    if (!accountNumber || !bankCode) {
+      setMessage("Please enter a valid account number and bank code.");
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const response = await axios.post(`${url}/api/auth/approve-withdrawal/${adminId}`, {
+        accountNumber,
+        bankCode,
+        transactionId: selectedTransaction._id,
+      });
+
+      if (response.status === 200 && response.data.success) {
+        setOtpSent(true);
+        setMessage("OTP sent successfully!");
+      } else {
+        setMessage("Failed to send OTP. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error sending OTP:", error);
+      setMessage("Failed to send OTP. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleCheckOTPVerification = async () => {
     if (!otp) {
       setMessage("Please enter the OTP.");
       return;
     }
 
     try {
-      const response = await axios.post(`${liveUrl}/api/verify-otp`, {
-        TransactionId: transaction._id,
-        Otp: otp,
+      setIsLoading(true);
+      const response = await axios.post(`${url}/api/auth/finalize-withdrawal/${adminId}`, {
+        transactionId: selectedTransaction._id,
+        otp,
+        transferCode,
       });
 
       if (response.status === 200 && response.data.success) {
@@ -109,6 +140,8 @@ const VerificationPage = () => {
     } catch (error) {
       console.error("Error verifying OTP:", error);
       setMessage("OTP verification failed. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -185,9 +218,7 @@ const VerificationPage = () => {
                       {transaction.status === "pending" && (
                         <>
                           <button
-                            onClick={() =>
-                              handleApproveClick(transaction)
-                            }
+                            onClick={() => handleApproveClick(transaction)}
                             className="px-4 py-2 text-sm text-white bg-blue-600 rounded hover:bg-blue-700"
                           >
                             Approve
@@ -217,7 +248,7 @@ const VerificationPage = () => {
                 <p className="mb-2">
                   Transaction ID: {selectedTransaction._id}
                 </p>
-
+                
                 {!otpSent ? (
                   <>
                     <input
@@ -236,9 +267,14 @@ const VerificationPage = () => {
                     />
                     <button
                       onClick={handleSendApprovalClick}
-                      className="px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700"
+                      disabled={isLoading}
+                      className={`px-4 py-2 text-white ${
+                        isLoading
+                          ? "bg-gray-400"
+                          : "bg-blue-600 hover:bg-blue-700"
+                      } rounded`}
                     >
-                      Send OTP
+                      {isLoading ? "Sending..." : "Send OTP"}
                     </button>
                   </>
                 ) : (
@@ -252,16 +288,28 @@ const VerificationPage = () => {
                     />
                     <button
                       onClick={handleCheckOTPVerification}
-                      className="px-4 py-2 text-white bg-green-500 rounded hover:bg-green-600"
+                      disabled={isLoading}
+                      className={`px-4 py-2 text-white ${
+                        isLoading
+                          ? "bg-gray-400"
+                          : "bg-green-500 hover:bg-green-600"
+                      } rounded`}
                     >
-                      Verify OTP
+                      {isLoading ? "Verifying..." : "Verify OTP"}
                     </button>
                   </>
                 )}
 
                 <button
-                  onClick={() => setSelectedTransaction(null)}
-                  className="px-4 py-2 text-white bg-gray-500 rounded hover:bg-gray-600 mt-4"
+                  onClick={() => {
+                    setSelectedTransaction(null);
+                    setOtpSent(false);
+                    setAccountNumber("");
+                    setBankCode("");
+                    setOtp("");
+                    setMessage("");
+                  }}
+                  className="ms-5 px-4 py-2 text-white bg-gray-500 rounded hover:bg-gray-600 mt-4"
                 >
                   Cancel
                 </button>
