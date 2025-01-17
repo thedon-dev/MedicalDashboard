@@ -16,6 +16,7 @@ const UserProfile = () => {
   const [documents, setDocuments] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [userType, setUserType] = useState(null);
+  const [walletLoading, setWalletLoading] = useState(false)
 
   const determineUserType = () => {
     if (location.pathname.includes("patients")) return "patients";
@@ -51,8 +52,9 @@ const UserProfile = () => {
   const fetchWalletDetails = async () => {
     setWalletLoading(true);
     try {
-      const response = await axios.get(`${url}/api/wallet/${id}`);
-      setWalletDetails(response.data);
+      const response = await axios.get(`${url}/api/auth/wallet-balance/${id}`);
+      setWalletDetails(response.data.walletBalance);
+      console.log(response.data.walletBalance)
     } catch (error) {
       console.error("Error fetching wallet details:", error);
     } finally {
@@ -266,7 +268,7 @@ const UserProfile = () => {
             ) : walletDetails ? (
               <div>
                 <p className="text-lg font-semibold">
-                  Wallet Balance: ₦{walletDetails.balance}
+                  Wallet Balance: ₦{walletDetails}
                 </p>
                 <div className="mt-5">
                   <div className="mb-3">
