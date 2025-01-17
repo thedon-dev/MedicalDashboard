@@ -6,8 +6,6 @@ import { url } from "../config";
 const VerificationPage = () => {
   const [transactions, setTransactions] = useState([]);
   const [selectedTransaction, setSelectedTransaction] = useState(null);
-  const [accountNumber, setAccountNumber] = useState("");
-  const [bankCode, setBankCode] = useState("");
   const [otp, setOtp] = useState("");
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -23,8 +21,6 @@ const VerificationPage = () => {
 
   const handleApproveClick = (transaction) => {
     setSelectedTransaction(transaction);
-    setAccountNumber(""); // Reset account number input
-    setBankCode(""); // Reset bank code input
     setMessage("");
   };
 
@@ -37,6 +33,7 @@ const VerificationPage = () => {
         `${url}/api/auth/pending-withdrawals/${id}`
       );
       const fetchedTransactions = response.data.pendingWithdrawals;
+      console.log(response.data.pendingWithdrawals);
 
       setTransactions(fetchedTransactions);
       const total = fetchedTransactions.reduce(
@@ -83,18 +80,16 @@ const VerificationPage = () => {
   }, [adminId]);
 
   const handleSendApprovalClick = async () => {
-    if (!accountNumber || !bankCode) {
-      setMessage("Please enter a valid account number and bank code.");
-      return;
-    }
-
     try {
       setIsLoading(true);
-      const response = await axios.post(`${url}/api/auth/approve-withdrawal/${adminId}`, {
-        accountNumber,
-        bankCode,
-        transactionId: selectedTransaction._id,
-      });
+      const response = await axios.post(
+        `${url}/api/auth/approve-withdrawal/${adminId}`,
+        {
+          accountNumber: selectedTransaction.accountNumber,
+          bankCode: selectedTransaction.bankCode,
+          transactionId: selectedTransaction._id,
+        }
+      );
 
       if (response.status === 200 && response.data.success) {
         setOtpSent(true);
@@ -118,11 +113,14 @@ const VerificationPage = () => {
 
     try {
       setIsLoading(true);
-      const response = await axios.post(`${url}/api/auth/finalize-withdrawal/${adminId}`, {
-        transactionId: selectedTransaction._id,
-        otp,
-        transferCode,
-      });
+      const response = await axios.post(
+        `${url}/api/auth/finalize-withdrawal/${adminId}`,
+        {
+          transactionId: selectedTransaction._id,
+          otp,
+          transferCode,
+        }
+      );
 
       if (response.status === 200 && response.data.success) {
         setTransactions((prev) =>
@@ -186,58 +184,66 @@ const VerificationPage = () => {
                   <th className="py-3 px-4 text-left">Provider</th>
                   <th className="py-3 px-4 text-left">Type</th>
                   <th className="py-3 px-4 text-right">Amount</th>
+                  <th className="py-3 px-4 text-center">Date</th>
                   <th className="py-3 px-4 text-center">Status</th>
                   <th className="py-3 px-4 text-center">Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {currentLogs.map((transaction) => (
-                  <tr
-                    key={transaction._id}
-                    className="border-b text-gray-700 hover:bg-gray-100"
-                  >
-                    <td className="py-3 px-4">
-                      {transaction.user.firstName} {transaction.user.lastName}
-                    </td>
-                    <td className="py-3 px-4">{transaction.type}</td>
-                    <td className="py-3 px-4 text-right">
-                      {transaction.amount}
-                    </td>
-                    <td
-                      className={`py-3 px-4 text-center font-medium ${
-                        transaction.status === "approved"
-                          ? "text-green-500"
-                          : transaction.status === "rejected"
-                          ? "text-red-500"
-                          : "text-yellow-500"
-                      }`}
+                {currentLogs.map((transaction) => {
+                  const transactionDate = new Date(transaction.date);
+                  const formattedDate = transactionDate.toLocaleDateString(); // e.g., 1/12/2025
+                  const formattedTime = transactionDate.toLocaleTimeString(); // e.g., 18:59:35
+
+                  return (
+                    <tr
+                      key={transaction._id}
+                      className="border-b text-gray-700 hover:bg-gray-100"
                     >
-                      {transaction.status}
-                    </td>
-                    <td className="py-3 px-4 flex justify-center gap-2">
-                      {transaction.status === "pending" && (
-                        <>
-                          <button
-                            onClick={() => handleApproveClick(transaction)}
-                            className="px-4 py-2 text-sm text-white bg-blue-600 rounded hover:bg-blue-700"
-                          >
-                            Approve
-                          </button>
-                          <button
-                            onClick={() =>
-                              console.log(
-                                `Reject transaction: ${transaction._id}`
-                              )
-                            }
-                            className="px-4 py-2 text-sm text-white bg-red-600 rounded hover:bg-red-700"
-                          >
-                            Reject
-                          </button>
-                        </>
-                      )}
-                    </td>
-                  </tr>
-                ))}
+                      <td className="py-3 px-4">
+                        {transaction.user.firstName} {transaction.user.lastName}
+                      </td>
+                      <td className="py-3 px-4">{transaction.type}</td>
+                      <td className="py-3 px-4 text-right">
+                        {transaction.amount.toLocaleString()}
+                      </td>
+                      <td className="py-3 px-4 text-center">{formattedDate}</td>
+                      <td
+                        className={`py-3 px-4 text-center font-medium ${
+                          transaction.status === "approved"
+                            ? "text-green-500"
+                            : transaction.status === "rejected"
+                            ? "text-red-500"
+                            : "text-yellow-500"
+                        }`}
+                      >
+                        {transaction.status}
+                      </td>
+                      <td className="py-3 px-4 flex justify-center gap-2">
+                        {transaction.status === "pending" && (
+                          <>
+                            <button
+                              onClick={() => handleApproveClick(transaction)}
+                              className="px-4 py-2 text-sm text-white bg-blue-600 rounded hover:bg-blue-700"
+                            >
+                              Approve
+                            </button>
+                            <button
+                              onClick={() =>
+                                console.log(
+                                  `Reject transaction: ${transaction._id}`
+                                )
+                              }
+                              className="px-4 py-2 text-sm text-white bg-red-600 rounded hover:bg-red-700"
+                            >
+                              Reject
+                            </button>
+                          </>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -248,23 +254,9 @@ const VerificationPage = () => {
                 <p className="mb-2">
                   Transaction ID: {selectedTransaction._id}
                 </p>
-                
+
                 {!otpSent ? (
                   <>
-                    <input
-                      type="text"
-                      placeholder="Account Number"
-                      value={accountNumber}
-                      onChange={(e) => setAccountNumber(e.target.value)}
-                      className="w-full mb-4 p-2 border rounded"
-                    />
-                    <input
-                      type="text"
-                      placeholder="Bank Code"
-                      value={bankCode}
-                      onChange={(e) => setBankCode(e.target.value)}
-                      className="w-full mb-4 p-2 border rounded"
-                    />
                     <button
                       onClick={handleSendApprovalClick}
                       disabled={isLoading}
@@ -304,8 +296,6 @@ const VerificationPage = () => {
                   onClick={() => {
                     setSelectedTransaction(null);
                     setOtpSent(false);
-                    setAccountNumber("");
-                    setBankCode("");
                     setOtp("");
                     setMessage("");
                   }}

@@ -77,9 +77,9 @@ const AdminLayout = () => {
       >
         <div className=" flex flex-col">
           <div className="sticky top-0 bg-[#3AD1F0] justify-between lg:justify-center items-center h-[5.5rem] flex px-5">
-            <h1 className="text-white text-lg lg:text-2xl font-bold">
-              <span className="text-black">Mobile</span>Doctor
-            </h1>
+            <div className="w-44">
+              <img src="https://firststarconsults.com/images/logo-1.png" alt="" className="object-fit"/>
+            </div>
             <div className="flex lg:hidden items-center">
               <button className="" onClick={() => setNavOpen(!isNavOpen)}>
                 <FaX className="text-white" size={18} />

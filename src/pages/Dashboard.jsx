@@ -49,7 +49,6 @@ const Dashboard = () => {
         const response = await axios.get(`${url}/api/admin/statistics-cards`);
         const { totalDoctors, totalPatients, totalScheduled, totalCanceled } =
           response.data.data;
-        console.log(response.data);
 
         const updatedDataSet = [
           { ...dataSet[0], data: totalDoctors }, // Total Doctors

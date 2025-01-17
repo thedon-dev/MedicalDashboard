@@ -35,7 +35,7 @@ const TopRatedDoctorsTable = () => {
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Top Rated Doctors</h1>
-      <div className="rounded-lg overflow-hidden">
+      <div className="rounded-lg overflow-hidden overflow-x-scroll lg:overflow-x-hidden text-nowrap">
         <table className="w-full table-auto border-collapse border border-gray-300">
           <thead>
             <tr className="bg-[#3AD1F0] text-white">
