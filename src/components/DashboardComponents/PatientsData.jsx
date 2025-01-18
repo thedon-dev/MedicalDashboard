@@ -115,7 +115,6 @@ const PatientsData = () => {
       try {
         const response = await axios.get(`${url}/api/admin/top-ailments`);
         const ailments = response.data?.data;
-        console.log('ailment: ', response.data)
         if (ailments.length > 0) {
           const labels = ailments.map((item) => item.diagnosis);
           const data = ailments.map((item) => item.count);
@@ -143,7 +142,6 @@ const PatientsData = () => {
     const fetchDayData = async () => {
       try {
         const response = await axios.get(`${url}/api/admin/patient-stats`);
-        console.log(response.data)
         if (response.data.success) {
           setChartData({
             patientsPerDay: response.data.data.patientsPerDay,

@@ -51,9 +51,6 @@ const HealthcareApproval = () => {
         throw new Error("Invalid API response structure");
       }
 
-      console.log("Fetched data: ", fetchedData);
-
-      // Create updatedRequestData using the object fields
       const updatedRequestData = [
         { name: "Total Requests", requests: fetchedData.totalRequests },
         { name: "Approved Requests", requests: fetchedData.approved },
@@ -61,7 +58,6 @@ const HealthcareApproval = () => {
         { name: "Rejected Requests", requests: fetchedData.rejected },
       ];
 
-      console.log("Updated request data: ", updatedRequestData);
       let statusCounts = {}
       if (Array.isArray(fetchedData.providers)) {
         statusCounts = fetchedData.providers.reduce((acc, provider) => {
@@ -145,6 +141,11 @@ const HealthcareApproval = () => {
 
   const handleApproval = async (provider) => {
     try {
+      if (!providers.some((p) => p.id === provider.id)) {
+        console.error("Provider ID not found in the list.");
+        setMessage("Failed to approve provider.");
+        return;
+      }
       const payload = {
         userId: provider.id,
         isApproved: true,
@@ -166,6 +167,8 @@ const HealthcareApproval = () => {
     } catch (error) {
       console.error("Error approving provider:", error.message);
       setMessage("Failed to approve provider.");
+    } finally {
+      setSelectedProvider(null)
     }
   };
 
@@ -188,7 +191,6 @@ const HealthcareApproval = () => {
   };
 
   const openProviderDetails = (provider) => {
-    console.log("provider chosen: ", provider);
     setSelectedProvider(provider);
   };
 

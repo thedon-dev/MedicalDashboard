@@ -15,8 +15,6 @@ const ProgressBar = ({ data }) => {
       }));
 
       setTransformedData(transformed);
-
-      // Calculate total requests
       const total = Object.values(data).reduce((sum, count) => sum + count, 0);
       setTotalRequests(total);
     }
