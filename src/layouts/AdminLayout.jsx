@@ -77,16 +77,26 @@ const AdminLayout = () => {
       >
         <div className=" flex flex-col">
           <div className="sticky top-0 bg-[#3AD1F0] justify-between lg:justify-center items-center h-[5.5rem] flex px-5">
-            <div className="w-44">
-              <img src="https://firststarconsults.com/images/logo-1.png" alt="" className="object-fit"/>
+            <div className="relative w-full flex flex-col items-center">
+              <div className="w-44">
+                <img
+                  src="https://firststarconsults.com/images/logo-1.png"
+                  alt=""
+                  className="object-fit"
+                />
+              </div>
+              <p className="absolute bottom-0 text-xl font-bold w-fit text-center">
+                Mobile <span className="text-white">Doctor</span>
+              </p>
             </div>
+
             <div className="flex lg:hidden items-center">
               <button className="" onClick={() => setNavOpen(!isNavOpen)}>
                 <FaX className="text-white" size={18} />
               </button>
             </div>
           </div>
-          <div className="mt-6 pb-10 flex flex-col gap-8 h-full">
+          <div className="mt-14 pb-10 flex flex-col gap-8 h-full">
             {asideLinks.map((link, index) => (
               <div
                 key={index}

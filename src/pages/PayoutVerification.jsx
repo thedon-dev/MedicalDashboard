@@ -18,6 +18,7 @@ const VerificationPage = () => {
   const apiUrl = `${liveUrl}/api/admin/pendingWithdrawals`;
   const [adminId, setAdminId] = useState(null);
   const [otpSent, setOtpSent] = useState(false);
+  const [transferCode, setTransferCode] = useState(null)
 
   const handleApproveClick = (transaction) => {
     setSelectedTransaction(transaction);
@@ -33,7 +34,6 @@ const VerificationPage = () => {
         `${url}/api/auth/pending-withdrawals/${id}`
       );
       const fetchedTransactions = response.data.pendingWithdrawals;
-      console.log(response.data.pendingWithdrawals);
 
       setTransactions(fetchedTransactions);
       const total = fetchedTransactions.reduce(
@@ -94,6 +94,8 @@ const VerificationPage = () => {
       if (response.status === 200 && response.data.success) {
         setOtpSent(true);
         setMessage("OTP sent successfully!");
+        setTransferCode(response.data.transferDetails.transfer_code)
+        console.log(transferCode)
       } else {
         setMessage("Failed to send OTP. Please try again.");
       }
@@ -122,7 +124,7 @@ const VerificationPage = () => {
         }
       );
 
-      if (response.status === 200 && response.data.success) {
+      if (response.status === 200 && response.data.success === "true") {
         setTransactions((prev) =>
           prev.map((txn) =>
             txn._id === selectedTransaction._id
@@ -192,8 +194,7 @@ const VerificationPage = () => {
               <tbody>
                 {currentLogs.map((transaction) => {
                   const transactionDate = new Date(transaction.date);
-                  const formattedDate = transactionDate.toLocaleDateString(); // e.g., 1/12/2025
-                  const formattedTime = transactionDate.toLocaleTimeString(); // e.g., 18:59:35
+                  const formattedDate = transactionDate.toLocaleDateString();
 
                   return (
                     <tr

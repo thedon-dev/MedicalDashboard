@@ -133,7 +133,7 @@ const UserProfile = () => {
         <div className="bg-blue-500 h-32"></div>
         <div className="relative bg-gray-100 px-5 pb-5 pt-10 rounded-b-lg">
           <button
-            className="absolute top-5 right-5 bg-green-600 text-white px-4 py-2 rounded-lg font-semibold"
+            className="absolute -top-12 md:top-5 right-5 bg-green-600 text-white px-4 py-2 rounded-lg font-semibold z-20"
             onClick={() => {
               setWalletModalOpen(true);
               fetchWalletDetails();

@@ -156,7 +156,6 @@ const HealthcareApproval = () => {
         `${url}/api/admin/set-approval-status/${adminId}`,
         payload
       );
-      console.log("Response:", response.data);
       const updatedProviders = providers.map((p) =>
         p.id === provider.id ? { ...p, status: "Approved" } : p
       );
