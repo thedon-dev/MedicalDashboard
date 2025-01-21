@@ -16,7 +16,7 @@ const UserProfile = () => {
   const [documents, setDocuments] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [userType, setUserType] = useState(null);
-  const [walletLoading, setWalletLoading] = useState(false)
+  const [walletLoading, setWalletLoading] = useState(false);
 
   const determineUserType = () => {
     if (location.pathname.includes("patients")) return "patients";
@@ -25,6 +25,8 @@ const UserProfile = () => {
     if (location.pathname.includes("laboratories")) return "laboratories";
     return null;
   };
+
+  const [adminId, setAdminId] = useState("");
 
   useEffect(() => {
     const type = determineUserType();
@@ -54,7 +56,7 @@ const UserProfile = () => {
     try {
       const response = await axios.get(`${url}/api/auth/wallet-balance/${id}`);
       setWalletDetails(response.data.walletBalance);
-      console.log(response.data.walletBalance)
+      console.log(response.data.walletBalance);
     } catch (error) {
       console.error("Error fetching wallet details:", error);
     } finally {
@@ -103,21 +105,48 @@ const UserProfile = () => {
 
   const suspendUser = async (userId) => {
     try {
-      const response = await axios.patch(`${url}/${userType}/${userId}`, {
-        suspended: !user.suspended,
-      });
-      setUser((prev) => ({ ...prev, suspended: !prev.suspended }));
-
-      alert(
-        user.suspended
-          ? "User unsuspended successfully!"
-          : "User suspended successfully!"
+      const response = await axios.post(
+        `${url}/api/admin/${adminId}/suspend-user`,
+        {
+          userId: userId,
+        }
       );
+
+      if (response.status === 200) {
+        alert("User status updated successfully!");
+      } else {
+        alert("Something went wrong. Please try again.");
+      }
     } catch (error) {
       console.error("Error updating user status:", error);
       alert("An error occurred while updating the user status.");
     }
   };
+
+  const [suspendedUsers, setSuspendedUsers] = useState([]);
+  const [userSuspended, setUserSuspended] = useState(false);
+  const fetchSuspendedUsers = async () => {
+    try {
+      const response = await axios.get(`${url}/api/admin/suspended-accounts`);
+      const suspendedIds = response.data.data.map((user) => user._id);
+      setSuspendedUsers(suspendedIds);
+    } catch (error) {
+      console.error("Error fetching suspended users:", error);
+    }
+  };
+
+  useEffect(() => {
+    setUserSuspended(suspendedUsers.includes(id));
+  }, [suspendedUsers, id]);
+
+  useEffect(() => {
+    const storedUserData = localStorage.getItem("userData");
+    if (storedUserData) {
+      const user = JSON.parse(storedUserData);
+      setAdminId(user.id);
+    }
+    fetchSuspendedUsers();
+  }, []);
 
   if (loading)
     return (
@@ -200,9 +229,11 @@ const UserProfile = () => {
           <div className="mt-8 flex gap-5">
             <button
               onClick={() => suspendUser(id)}
-              className="bg-red-600 text-white px-5 py-2 rounded-lg"
+              className={`${
+                userSuspended ? "bg-green-600" : "bg-red-600"
+              } text-white px-5 py-2 rounded-lg`}
             >
-              {user.suspended ? "Unsuspend User" : "Suspend User"}
+              {userSuspended ? "Unsuspend User" : "Suspend User"}
             </button>
             <button
               onClick={() => {

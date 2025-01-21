@@ -17,11 +17,7 @@ const HealthcareApproval = () => {
     { name: "Pharmacy", requests: 0 },
     { name: "Laboratory", requests: 0 },
   ]);
-  const [allProviders, setallProviders] = useState([
-    { name: "Doctors", requests: 0 },
-    { name: "Pharmacy", requests: 0 },
-    { name: "Laboratory", requests: 0 },
-  ]);
+  const [allProviders, setallProviders] = useState([]);
   const [Data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -58,7 +54,7 @@ const HealthcareApproval = () => {
         { name: "Rejected Requests", requests: fetchedData.rejected },
       ];
 
-      let statusCounts = {}
+      let statusCounts = {};
       if (Array.isArray(fetchedData.providers)) {
         statusCounts = fetchedData.providers.reduce((acc, provider) => {
           const { status } = provider;
@@ -93,7 +89,7 @@ const HealthcareApproval = () => {
       const adminId = JSON.parse(storedUserData);
       setAdminId(adminId.id);
     }
-
+    console.log("providers", providers);
 
     const fetchDataFromApi = async () => {
       setLoading(true);
@@ -116,7 +112,6 @@ const HealthcareApproval = () => {
 
         setData(result.data);
 
-        // Count the occurrences of 'doctor', 'pharmacy', 'laboratory'
         const countProviders = result.data.reduce(
           (acc, provider) => {
             if (provider.type === "doctor") acc.doctors++;
@@ -130,9 +125,9 @@ const HealthcareApproval = () => {
         setallProviders2(countProviders);
       } catch (error) {
         console.error("Error during fetch:", error);
-        setError(error.message); 
+        setError(error.message);
       } finally {
-        setLoading(false); 
+        setLoading(false);
       }
     };
 
@@ -141,26 +136,27 @@ const HealthcareApproval = () => {
 
   const handleApproval = async (provider) => {
     try {
-      if (!providers.some((p) => p.id === provider.id)) {
+      if (!allProviders.some((p) => p.id === provider.id)) {
         console.error("Provider ID not found in the list.");
         setMessage("Failed to approve provider.");
         return;
       }
-      const payload = {
-        userId: provider.id,
-        isApproved: true,
-        type: provider.type,
-        rejectionNote: null,
-      };
 
       const response = await axios.put(
         `${url}/api/admin/set-approval-status/${adminId}`,
-        payload
+        {
+          userId: provider.id,
+          isApproved: true,
+          type: provider.type,
+          rejectionNote: null,
+        }
       );
-      const updatedProviders = providers.map((p) =>
-        p.id === provider.id ? { ...p, status: "Approved" } : p
-      );
-      setProviders(updatedProviders);
+      if (response.status === 200) {
+        const data = allProviders.map((p) =>
+          p.id === provider.id ? { ...p, status: "Approved" } : p
+        );
+        setallProviders(data);
+      }
 
       setMessage("Provider approved successfully!");
       setSelectedProvider(null);
@@ -168,7 +164,7 @@ const HealthcareApproval = () => {
       console.error("Error approving provider:", error.message);
       setMessage("Failed to approve provider.");
     } finally {
-      setSelectedProvider(null)
+      setSelectedProvider(null);
     }
   };
 
@@ -406,7 +402,7 @@ const HealthcareApproval = () => {
             ) : (
               <div className="flex justify-end gap-4">
                 <button
-                  onClick={() => handleApproval(selectedProvider.id)}
+                  onClick={() => handleApproval(selectedProvider)}
                   className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
                 >
                   Approve
