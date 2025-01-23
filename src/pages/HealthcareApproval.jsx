@@ -147,7 +147,7 @@ const HealthcareApproval = () => {
         `${url}/api/admin/set-approval-status/${adminId}`,
         {
           userId: provider.id,
-          isApproved: true,
+          isApproved: "Approved",
           type: provider.type,
           rejectionNote: null,
         }
