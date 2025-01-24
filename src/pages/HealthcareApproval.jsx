@@ -89,7 +89,12 @@ const HealthcareApproval = () => {
     if (storedUserData) {
       const adminId = JSON.parse(storedUserData);
       setAdminId(adminId.id);
+      console.log(adminId.id)
+    } else {
+      console.log("no user ID")
     }
+
+
 
     const fetchDataFromApi = async () => {
       setLoading(true);
