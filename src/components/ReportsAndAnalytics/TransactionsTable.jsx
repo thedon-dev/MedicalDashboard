@@ -9,7 +9,7 @@ const TransactionsTable = ({ transactions }) => {
   const currentLogs = transactions.slice(indexOfFirstData, indexOfLastData);
   return (
     <>
-      <div className="mt-5 bg-[#3AD1F0] rounded-lg overflow-hidden shadow-lg overflow-x-scroll lg:overflow-x-hidden">
+      <div className="mt-5 bg-[#3AD1F0] rounded-lg overflow-hidden shadow-lg overflow-x-scroll">
         <table className="w-full border-collapse">
           <thead>
             <tr className="text-white">

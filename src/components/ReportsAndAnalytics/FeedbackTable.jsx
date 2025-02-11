@@ -9,7 +9,7 @@ const FeedbackTable = ({ feedback }) => {
   const currentLogs = feedback.slice(indexOfFirstData, indexOfLastData);
   return (
     <>
-      <div className="mt-5  rounded-lg shadow-lg overflow-hidden overflow-x-scroll lg:overflow-x-hidden">
+      <div className="mt-5  rounded-lg shadow-lg overflow-hidden overflow-x-scroll">
         <table className="w-full text-nowrap border-collapse bg-[#3AD1F0]">
           <thead>
             <tr className="text-white">
