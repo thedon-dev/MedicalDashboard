@@ -60,7 +60,7 @@ const Dashboard = () => {
         console.error("Error fetching data:", error);
       }
     };
-    fetchData()
+    fetchData();
   }, []);
   return (
     <div className="">

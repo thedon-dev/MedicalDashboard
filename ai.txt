@@ -98,42 +98,10 @@ const UserProfile = () => {
 
   const fetchDocuments = async (id) => {
     try {
-      let response;
-      if (userType === "doctors") {
-        response = await axios.post(
-          `${url}/api/provider/credentialsDetails/${id}`
-        );
-      } else {
-        response = await axios.post(
-          `${url}/api/provider/otherProvidersCredentials/${id}`
-        );
-      }
-
-      console.log(response);
-
-      if (response.data.success) {
-        const images =
-          response.data.updatedDoctor?.images ||
-          response.data.updatedUser?.images ||
-          {};
-        const documents = [];
-
-        for (const [key, value] of Object.entries(images)) {
-          if (key !== "profilePhoto" && value) {
-            documents.push({
-              name: key.charAt(0).toUpperCase() + key.slice(1),
-              url: value,
-            });
-          }
-        }
-
-        setDocuments(documents);
-      } else {
-        setDocuments([]);
-      }
+      const response = await axios.get(`${url}/documents/${id}`);
+      setDocuments(response.data.documentsSubmitted);
     } catch (error) {
       console.error("Error fetching documents:", error);
-      setDocuments([]);
     }
   };
 
@@ -235,7 +203,7 @@ const UserProfile = () => {
               </li>
               <li>
                 KYC Status:{" "}
-                {user.kycVerification === true ||
+                {user.kycVerificationStatus === true ||
                 user.kycVerificationStatus == "Verified"
                   ? "Verified"
                   : "Not Verified"}
@@ -288,7 +256,7 @@ const UserProfile = () => {
       </div>
 
       {showModal && (
-        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-20">
+        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center">
           <div className="bg-white p-8 rounded-lg w-[80%] lg:w-[500px] max-h-[80vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-semibold">User Documents</h2>
@@ -300,31 +268,21 @@ const UserProfile = () => {
               </button>
             </div>
             {documents.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <ul>
                 {documents.map((doc, index) => (
-                  <div key={index} className="border rounded-lg p-4">
-                    <p className="font-semibold mb-2">{doc.name}</p>
-                    <div className="flex justify-center">
-                      {doc.url.match(/\.(jpeg|jpg|gif|png)$/) ? (
-                        <img
-                          src={doc.url}
-                          alt={doc.name}
-                          className="max-h-40 max-w-full rounded"
-                        />
-                      ) : (
-                        <a
-                          href={doc.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-500 underline"
-                        >
-                          View Document
-                        </a>
-                      )}
-                    </div>
-                  </div>
+                  <li key={index} className="mb-4 border-b pb-2">
+                    <p className="font-semibold">{doc.name}</p>
+                    <a
+                      href={doc.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-500 underline"
+                    >
+                      View Document
+                    </a>
+                  </li>
                 ))}
-              </div>
+              </ul>
             ) : (
               <p>No documents available for this user.</p>
             )}
@@ -332,7 +290,7 @@ const UserProfile = () => {
         </div>
       )}
       {walletModalOpen && (
-        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-20">
+        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center">
           <div className="bg-white p-8 rounded-lg w-[90%] lg:w-[500px] max-h-[80vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-semibold">Manage Wallet</h2>
@@ -404,3 +362,54 @@ const UserProfile = () => {
 };
 
 export default UserProfile;
+
+
+
+I want to fetch the documents with another API if the person is a doctor I'm to call this API 
+http://localhost:3000/api/provider/credentialsDetails/:providerId?= 
+
+Then if the person Is anything aside Doctor you use this API 
+http://localhost:3000/api/provider/otherProvidersCredentials/:providerId?=
+
+So I'm to Input the user's id in the parameter get POST it for me to get a response 
+
+{
+  "success": true,
+  "message": "Profile and image updated successfully",
+  "updatedDoctor": {
+    "medicalSpecialty": {
+      "name": "medical officer",
+      "fee": 1000
+    },
+    "images": {
+      "profilePhoto": null,
+      "certificate": "http://res.cloudinary.com/ditdm55co/image/upload/v1711235660/65ec5d4f0d3ee3421daee574/65ec5d4f0d3ee3421daee574/1711235658954.jpg"
+    },
+    "_id": "65ec694154a613030454ce3f",
+    "fullName": "Orianwo Princewill",
+    "specialties": [],
+    "consultations": [],
+    "approval": false,
+    "onlineStatus": true,
+    "kycVerification": false,
+    "feedback": [],
+    "__v": 2,
+    "sessionToken": "47e97b296ccb73c8a044e17ddac50324",
+    "reviews": [],
+    "baseConsultationFee": 1000,
+    "medicalOfficer": false,
+    "isRecommended": true,
+    "about": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim",
+    "address": "1 rumuokwurusi",
+    "country": "Nigeria",
+    "gender": "m",
+    "isOnline": false,
+    "registrationCouncil": "medical council",
+    "registrationNumber": "2343445",
+    "registrationYear": "2008",
+    "sponsored": false
+  },
+  "imageUrls": []
+}
+
+This is the supposed response and the documents are said to be in the "images" property where the profile picture is 

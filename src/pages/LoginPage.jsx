@@ -15,7 +15,7 @@ const LoginPage = () => {
   useEffect(() => {
     const token = localStorage.getItem("authToken");
     if (token) {
-      navigate("/admin/dashboard");
+      // navigate("/admin/dashboard");
     }
   }, [navigate]);
 
@@ -51,11 +51,9 @@ const LoginPage = () => {
         email: formData.email,
         password: formData.password,
       });
-
       if (response.data.message === "Successfully logged in") {
         localStorage.setItem("authToken", response.data.user.id);
         localStorage.setItem("userData", JSON.stringify(response.data.user));
-
         alert("Login successful!");
         navigate("/admin/dashboard");
       } else {

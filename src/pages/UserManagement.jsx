@@ -198,7 +198,7 @@ const UserManagement = () => {
                           doctor.isOnline ? "text-green-500" : "text-red-600"
                         }`}
                       >
-                        {doctor.isOnline ? "Online" : "Offline"}
+                        {doctor.isOnline === true ? "Online" : "Offline"}
                       </span>
                     </p>
 
@@ -255,7 +255,7 @@ const UserManagement = () => {
                           : "text-red-500"
                       }`}
                     >
-                      {pharmacy.kycVerification
+                      {pharmacy.kycVerification === true
                         ? "KYC Verified"
                         : "KYC Not Verified"}
                     </p>
@@ -305,18 +305,31 @@ const UserManagement = () => {
                         Active Status:{" "}
                         <span
                           className={`${
-                            lab.isOnline ? "text-green-500" : "text-red-600"
+                            lab.isOnline === true
+                              ? "text-green-500"
+                              : "text-red-600"
                           } `}
                         >
-                          {lab.isOnline ? "Online" : "Offline"}
+                          {lab.isOnline === true ? "Online" : "Offline"}
                         </span>{" "}
                       </p>
                       <div className="mt-1">
                         <span className="text-sm">Address: {lab.address}</span>
                       </div>
+                      <p
+                        className={`text-sm font-semibold ${
+                          lab.kycVerification
+                            ? "text-green-500"
+                            : "text-red-500"
+                        }`}
+                      >
+                        {lab.kycVerification === true
+                          ? "KYC Verified"
+                          : "KYC Not Verified"}
+                      </p>
                     </div>
                     <Link
-                      to={`/admin/usermanagement/doctors/${lab._id}`}
+                      to={`/admin/usermanagement/laboratories/${lab._id}`}
                       className="w-full text-center py-2 rounded text-white bg-[#3AD1F0] mt-2 font-semibold"
                     >
                       View Profile
@@ -363,7 +376,7 @@ const UserManagement = () => {
 
                     <p className="">{laboratory.details.bio}</p>
                     <Link
-                      to={`/usermanagement/doctors/${laboratory.id}`}
+                      to={`/usermanagement/therapists/${laboratory.id}`}
                       className="w-full text-center py-2 rounded text-white bg-[#3AD1F0] mt-2 font-semibold"
                     >
                       View Profile

@@ -6,9 +6,10 @@ import FinancialChart from "../components/ReportsAndAnalytics/FinancialSummary";
 import FeedbackTable from "../components/ReportsAndAnalytics/FeedbackTable";
 import FeedbackChart from "../components/ReportsAndAnalytics/FeedbackChart";
 import { Link } from "react-router-dom";
+import { url } from "../config";
 
 export const ReportingAndAnalytics = () => {
-  const liveUrl = "https://meddatabase-1.onrender.com";
+  const liveUrl = url;
   const localUrl = "http://localhost:3000";
   const [loading, setLoading] = useState(true);
   const [usersStatus, setUsersStats] = useState([]);
@@ -125,7 +126,12 @@ export const ReportingAndAnalytics = () => {
         <div className="col-span-3">
           <div className="flex justify-between">
             <h3 className="text-xl font-bold">Feedbacks</h3>
-            <Link to="/admin/feedbacksmanagement" className="text-blue-700 underline underline-offset-4">Manage Feedbacks</Link>
+            <Link
+              to="/admin/feedbacksmanagement"
+              className="text-blue-700 underline underline-offset-4"
+            >
+              Manage Feedbacks
+            </Link>
           </div>
           {!loading ? (
             <div>

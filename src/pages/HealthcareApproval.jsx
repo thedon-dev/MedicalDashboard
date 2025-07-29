@@ -36,7 +36,6 @@ const HealthcareApproval = () => {
   const [adminId, setAdminId] = useState("");
 
   const fetchProviders = async () => {
-
     setIsLoading(true);
     setError("");
 
@@ -89,12 +88,10 @@ const HealthcareApproval = () => {
     if (storedUserData) {
       const adminId = JSON.parse(storedUserData);
       setAdminId(adminId.id);
-      console.log(adminId.id)
+      console.log(adminId.id);
     } else {
-      console.log("no user ID")
+      console.log("no user ID");
     }
-
-
 
     const fetchDataFromApi = async () => {
       setLoading(true);
@@ -146,8 +143,8 @@ const HealthcareApproval = () => {
         setMessage("Failed to approve provider.");
         return;
       }
-      console.log(provider.id)
-      console.log(provider.type)
+      console.log(provider.id);
+      console.log(provider.type);
       const response = await axios.put(
         `${url}/api/admin/set-approval-status/${adminId}`,
         {
