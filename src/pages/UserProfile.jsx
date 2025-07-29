@@ -17,6 +17,9 @@ const UserProfile = () => {
   const [showModal, setShowModal] = useState(false);
   const [userType, setUserType] = useState(null);
   const [walletLoading, setWalletLoading] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [imageModalOpen, setImageModalOpen] = useState(false);
+  let requiredAdminId = localStorage.getItem("authToken");
 
   const determineUserType = () => {
     if (location.pathname.includes("patients")) return "patients";
@@ -96,26 +99,28 @@ const UserProfile = () => {
     }
   };
 
-  const fetchDocuments = async (id) => {
+  const fetchDocuments = async (id, role) => {
     try {
-      let response;
-      if (userType === "doctors") {
-        response = await axios.post(
-          `${url}/api/provider/credentialsDetails/${id}`
-        );
-      } else {
-        response = await axios.post(
-          `${url}/api/provider/otherProvidersCredentials/${id}`
-        );
+      let queryParams = {};
+      console.log("Admin Id", requiredAdminId);
+      console.log(role);
+
+      if (["doctor", "pharmacy", "laboratory"].includes(role)) {
+        queryParams.providerType = role.charAt(0).toUpperCase() + role.slice(1);
+        queryParams.providerId = id;
       }
+
+      const response = await axios.get(
+        `${url}/api/admin/get-credentials/${requiredAdminId}`,
+        {
+          params: queryParams,
+        }
+      );
 
       console.log(response);
 
       if (response.data.success) {
-        const images =
-          response.data.updatedDoctor?.images ||
-          response.data.updatedUser?.images ||
-          {};
+        const images = response.data.data.credentials || {};
         const documents = [];
 
         for (const [key, value] of Object.entries(images)) {
@@ -276,7 +281,7 @@ const UserProfile = () => {
             </button>
             <button
               onClick={() => {
-                fetchDocuments(id);
+                fetchDocuments(id, user.role);
                 setShowModal(true);
               }}
               className="bg-yellow-600 text-white px-5 py-2 rounded-lg"
@@ -309,7 +314,11 @@ const UserProfile = () => {
                         <img
                           src={doc.url}
                           alt={doc.name}
-                          className="max-h-40 max-w-full rounded"
+                          className="max-h-40 max-w-full rounded cursor-pointer hover:opacity-80"
+                          onClick={() => {
+                            setSelectedImage(doc.url);
+                            setImageModalOpen(true);
+                          }}
                         />
                       ) : (
                         <a
@@ -396,6 +405,24 @@ const UserProfile = () => {
             ) : (
               <p>Failed to fetch wallet details.</p>
             )}
+          </div>
+        </div>
+      )}
+
+      {imageModalOpen && (
+        <div className="fixed inset-0 bg-black/50  flex items-center justify-center z-50 p-4">
+          <div className="relative max-w-4xl w-full">
+            <button
+              className="absolute top-12 right-0 text-white hover:text-gray-300"
+              onClick={() => setImageModalOpen(false)}
+            >
+              <FaX size={24} />
+            </button>
+            <img
+              src={selectedImage}
+              alt="Enlarged document"
+              className="max-h-[90vh] max-w-full mx-auto object-contain"
+            />
           </div>
         </div>
       )}
